@@ -1,0 +1,105 @@
+@import 'mapbox-gl/dist/mapbox-gl.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-midnight-ink: #00052e;
+  --color-signal-blue: #0428cb;
+  --color-arc-cyan: #34fcff;
+  --color-halo-violet: #afb4db;
+  --color-carbon: #222222;
+  --color-slate-body: #4f5166;
+  --color-fog: #6b6b83;
+  --color-mist: #8185a0;
+  --color-silver-border: #dbdcdf;
+  --color-paper: #ffffff;
+}
+
+body {
+  background-color: #00052e;
+  color: #ffffff;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #00052e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #131e5c;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #34fcff;
+}
+
+/* Pulse Animations for Dispatch & Markers */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 252, 255, 0.7);
+  }
+  70% {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 14px rgba(52, 252, 255, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 252, 255, 0);
+  }
+}
+
+.radar-ping {
+  animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Mapbox Marker Customizations */
+.driver-marker-container {
+  transition: transform 0.4s ease-out;
+}
+
+.driver-marker-pulse {
+  width: 32px;
+  height: 32px;
+  background-color: #0428cb;
+  border: 2px solid #34fcff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(52, 252, 255, 0.6);
+  cursor: pointer;
+}
+
+.pickup-marker {
+  width: 24px;
+  height: 24px;
+  background-color: #10b981;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+.dropoff-marker {
+  width: 24px;
+  height: 24px;
+  background-color: #ef4444;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
