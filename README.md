@@ -8,11 +8,17 @@
 [![Redis](https://img.shields.io/badge/Redis-7.x-red.svg)](https://redis.io/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8-white.svg)](https://socket.io/)
 [![Mapbox](https://img.shields.io/badge/Mapbox_GL-3.10-blue.svg)](https://www.mapbox.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-zeego.loghorizon.online-0428cb?style=for-the-badge&logo=nginx&logoColor=white)](https://zeego.loghorizon.online)
+[![Deployment Status](https://img.shields.io/badge/Deployment-Live%20%26%20Operational-brightgreen?style=for-the-badge)](https://zeego.loghorizon.online/api/health)
 
-An enterprise-grade, event-driven last-mile delivery dispatch engine tailored for **Zeego Delivery (Qatar)**. Architected with high-frequency GPS telemetry streaming over Redis and WebSockets (Socket.io), backed by PostgreSQL via Prisma ORM, and surfaced across three synchronized client interfaces built in Next.js with the **Ameba** nocturnal command-center design system.
+> **🚀 Live Production Instance:** [https://zeego.loghorizon.online](https://zeego.loghorizon.online)  
+> • **Admin Command Center:** [https://zeego.loghorizon.online/admin](https://zeego.loghorizon.online/admin)  
+> • **Rider Mobile PWA:** [https://zeego.loghorizon.online/rider](https://zeego.loghorizon.online/rider)  
+> • **Role-Based Auth (1-Click Login):** [https://zeego.loghorizon.online/login](https://zeego.loghorizon.online/login)  
+> • **System Health Diagnostic:** [https://zeego.loghorizon.online/api/health](https://zeego.loghorizon.online/api/health)
 
 ---
+
 
 ## Executive Overview
 
