@@ -4,7 +4,11 @@ let socketInstance: Socket | null = null;
 
 export function getSocketUrl(): string {
   if (typeof window !== 'undefined') {
-    // When opened from mobile or another device on the LAN, use the same hostname
+    // If running in production on standard port (80/443), Nginx proxies /socket.io/ to port 4000
+    if (window.location.port === '' || window.location.port === '80' || window.location.port === '443') {
+      return window.location.origin;
+    }
+    // Local dev fallback (e.g. localhost:3000 -> localhost:4000)
     const host = window.location.hostname || 'localhost';
     return `${window.location.protocol}//${host}:4000`;
   }
