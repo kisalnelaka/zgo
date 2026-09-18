@@ -1,21 +1,20 @@
-MIT License
+PROPRIETARY EVALUATION & DEMONSTRATION LICENSE
 
-Copyright (c) 2026 Zeego Delivery Real-Time Dispatch Engine Portfolio Project
+Copyright (c) 2026 Kisal Nelaka. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+CONFIDENTIAL & SOURCE-AVAILABLE DEMONSTRATION LICENSE
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. PURPOSE & SCOPE
+This software, source code, documentation, and associated assets (the "Software") are provided strictly and solely for evaluation and candidate competency assessment purposes by prospective hiring teams. 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. PROHIBITION OF COMMERCIAL USE & COPYING
+Under no circumstances may any party:
+(a) Deploy, execute, host, run, or utilize this Software or any derivative work in any commercial, revenue-generating, production, internal operational, or live testing environment.
+(b) Copy, reproduce, redistribute, sublicense, lease, sell, or publicly display this source code, architecture, or interface without the express prior written consent of the Author (Kisal Nelaka) and an executed formal employment or independent consulting agreement.
+(c) Extract, adapt, or build upon the architectural patterns, database schemas, API contracts, telemetry conduits, or UI component systems contained herein for corporate or proprietary use without direct compensation and formal hiring of the Author.
+
+3. RESERVATION OF RIGHTS
+All intellectual property rights, patent rights, copyright, trade secrets, and ownership in and to the Software remain exclusively with the Author (Kisal Nelaka).
+
+4. DISCLAIMER
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF OR INABILITY TO USE THE SOFTWARE.

@@ -1,73 +1,92 @@
-# Zeego Pulse · Real-Time Last-Mile Dispatch Engine
+# Zeego Delivery: Real-Time Last-Mile Dispatch Engine
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-22.x-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.21-lightgrey.svg)](https://expressjs.com/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.2-black.svg)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black.svg)](https://nextjs.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.4-1B222D.svg)](https://www.prisma.io/)
 [![Redis](https://img.shields.io/badge/Redis-7.x-red.svg)](https://redis.io/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8-white.svg)](https://socket.io/)
-[![Mapbox](https://img.shields.io/badge/Mapbox_GL-3.10-blue.svg)](https://www.mapbox.com/)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-zeego.loghorizon.online-0428cb?style=for-the-badge&logo=nginx&logoColor=white)](https://zeego.loghorizon.online)
-[![Deployment Status](https://img.shields.io/badge/Deployment-Live%20%26%20Operational-brightgreen?style=for-the-badge)](https://zeego.loghorizon.online/api/health)
+[![Swagger OpenAPI](https://img.shields.io/badge/Swagger-OpenAPI_3.0-85EA2D?logo=swagger&logoColor=black)](https://zeego.loghorizon.online/api/docs)
+[![Automated Tests](https://img.shields.io/badge/Tests-9%2F9%20Passing%20(100%25)-brightgreen?style=for-the-badge)](https://github.com/kisalnelaka/zgo)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-zeego.loghorizon.online-F6000A?style=for-the-badge&logo=nginx&logoColor=white)](https://zeego.loghorizon.online)
+[![License](https://img.shields.io/badge/License-Proprietary%20Evaluation-red.svg)](./LICENSE)
 
-> **🚀 Live Production Instance:** [https://zeego.loghorizon.online](https://zeego.loghorizon.online)  
-> • **Admin Command Center:** [https://zeego.loghorizon.online/admin](https://zeego.loghorizon.online/admin)  
-> • **Rider Mobile PWA:** [https://zeego.loghorizon.online/rider](https://zeego.loghorizon.online/rider)  
-> • **Role-Based Auth (1-Click Login):** [https://zeego.loghorizon.online/login](https://zeego.loghorizon.online/login)  
-> • **System Health Diagnostic:** [https://zeego.loghorizon.online/api/health](https://zeego.loghorizon.online/api/health)
-
----
-
-
-## Executive Overview
-
-Modern on-demand delivery requires sub-second coordinate synchronization between couriers in transit, dispatch operators managing fleet capacity, and customers anticipating their arrival. Writing high-frequency GPS telemetry (e.g., 5-second driver pings) directly to relational databases causes catastrophic connection saturation and write amplification.
-
-**Zeego Pulse resolves this by decoupling the telemetry stream from persistent business transactions:**
-1. **Redis Telemetry Cache (`driver:{id}:location`):** High-frequency GPS coordinates are held exclusively in an in-memory key-value cache with rolling TTL, shielding PostgreSQL from raw sensor noise.
-2. **WebSocket Event Hub (Socket.io):** Coordinates are multiplexed into isolated room scopes (`admin`, `driver:{id}`, `order:{id}`) to stream live vehicle headings and speeds without manual browser reloads.
-3. **Prisma PostgreSQL Engine:** ACID persistence is reserved solely for state machine transitions (`PENDING` ➔ `ASSIGNED` ➔ `IN_TRANSIT` ➔ `DELIVERED`).
+Production URL: https://zeego.loghorizon.online  
+Interactive OpenAPI Documentation: https://zeego.loghorizon.online/api/docs  
+Dispatcher Command Center: https://zeego.loghorizon.online/admin  
+Rider Mobile Interface: https://zeego.loghorizon.online/rider  
+Role-Based Access Control: https://zeego.loghorizon.online/login  
+System Health Diagnostics: https://zeego.loghorizon.online/api/health  
 
 ---
 
-## Architectural Topology
+## Technical Overview
+
+High-density on-demand delivery platforms require continuous coordinate synchronization between active couriers, fleet dispatchers, and end customers. Transmitting high-frequency GPS telemetry (such as five-second location pings) directly to relational storage causes connection pool exhaustion and unnecessary database write overhead.
+
+Zeego Delivery addresses this architectural challenge by isolating the real-time telemetry pipeline from transactional persistence:
+
+1. Redis In-Memory Telemetry Cache (`driver:{id}:location`): Real-time coordinates are stored with rolling time-to-live expirations, preventing raw sensor noise from reaching PostgreSQL.
+2. WebSocket Event Routing (Socket.io): Coordinates are routed into dedicated room scopes (`admin`, `driver:{id}`, `order:{id}`) to distribute bearing angles and speed metrics with zero browser polling.
+3. PostgreSQL Transactional Storage (Prisma ORM): Relational writes are restricted to lifecycle state transitions (`PENDING`, `ASSIGNED`, `IN_TRANSIT`, `DELIVERED`).
+4. Zeego Design System: Brand styling adopting Zeego Red (`#F6000A`), typography matching Figtree and Manrope, and support for light and dark operational modes.
+
+---
+
+## Technical Requirements Alignment
+
+| Core Competency Area | Production Implementation | Verification Reference |
+| :--- | :--- | :--- |
+| Real-Time WebSockets | Socket.io server with isolated room multiplexing (`join:driver`, `join:order`, `admin`). Sub-second delivery loop. | [Dispatcher Operations](https://zeego.loghorizon.online/admin) |
+| High-Frequency Caching | Redis 7 caching for volatile driver coordinates with automated TTL expiration to prevent write amplification. | [Redis Test Suite](#automated-test-results) |
+| Relational Integrity | PostgreSQL schema managed via Prisma ORM with strict state machine validation. | [`schema.prisma`](./server/prisma/schema.prisma) |
+| API Specifications | OpenAPI 3.0.3 documentation rendered via Swagger UI covering all contracts, schemas, and payload examples. | [`/api/docs`](https://zeego.loghorizon.online/api/docs) |
+| Mobile Geolocation | Mobile-first web application utilizing `navigator.geolocation.watchPosition`, QR device pairing, and heading calculation. | [`/rider`](https://zeego.loghorizon.online/rider) |
+| Brand Design System | Zeego corporate styling (`#F6000A`), Figtree typography, tonal surfaces, and persistent theme switching. | Navigation Theme Switcher |
+| Integration Testing | Automated Jest and Supertest suite verifying endpoint routing, coordinate validation, and Redis operations. | 9 of 9 Passing (`npm run test`) |
+| Seed Data and State Reset | Automated endpoint (`POST /api/demo/reset`) to reset courier states and delivery orders on demand. | Command Center Reset Action |
+
+---
+
+## System Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Clients["Three Synchronized Interfaces (Ameba Midnight Command System)"]
-        Rider["Rider Cockpit (/rider)<br/>Mobile PWA · GPS Streamer · Doha Route Simulator"]
-        Admin["Admin Operations (/admin)<br/>Mapbox Multi-Marker · Manual Dispatch Drawer"]
-        Customer["Customer Tracking (/track/:orderId)<br/>Real-Time Progress & Driver Trajectory"]
+    subgraph Clients["Client Applications"]
+        Rider["Rider Interface (/rider)<br/>Mobile PWA, Geolocation API, Route Simulator"]
+        Admin["Dispatcher Operations (/admin)<br/>Mapbox Multi-Marker Tracking, Dispatch Queue"]
+        Customer["Customer Tracking (/track/:orderId)<br/>Real-Time Status and Driver Trajectory"]
     end
 
-    subgraph RealTimeLayer["Real-Time Transport & High-Speed Cache"]
-        SocketServer["Socket.io Server<br/>Rooms: 'admin', 'driver:{id}', 'order:{id}'"]
-        RedisStore["Redis In-Memory Cache<br/>driver:{id}:location -> {lat, lng, heading, speed}"]
+    subgraph CacheLayer["Real-Time Cache and Transport"]
+        SocketServer["Socket.io Event Server<br/>Rooms: admin, driver:{id}, order:{id}"]
+        RedisStore["Redis 7 Cache<br/>driver:{id}:location (lat, lng, heading, speed)"]
     end
 
-    subgraph CoreBackend["Backend Dispatch Service (Express + TypeScript)"]
-        REST["REST API (/api/orders, /api/drivers)"]
-        DispatchEngine["State Machine & Telemetry Controller"]
-        SMSMock["Notification Gateway (Qatar Telecom Mock)"]
+    subgraph ServiceLayer["Core Backend Service"]
+        Swagger["OpenAPI Specification (/api/docs)"]
+        REST["Express REST API (/api/orders, /api/drivers, /api/demo/reset)"]
+        DispatchEngine["Lifecycle State Machine"]
+        SMSMock["Carrier Notification Gateway"]
     end
 
-    subgraph PersistenceLayer["Transactional Persistence"]
+    subgraph PersistenceLayer["Relational Persistence"]
         PrismaClient["Prisma ORM Client"]
-        PostgresDB[("PostgreSQL 16 Database<br/>Orders, Drivers")]
+        PostgresDB[("PostgreSQL 16 Database<br/>Orders, Drivers, Users")]
     end
 
-    Rider -- "ping_location (5s GPS ping)" --> SocketServer
-    SocketServer -- "Cache coordinates" --> RedisStore
-    SocketServer -- "location_update broadcast" --> Admin
-    SocketServer -- "location_update (order room)" --> Customer
+    Rider -- "Location ping (5s interval)" --> SocketServer
+    SocketServer -- "Cache coordinate" --> RedisStore
+    SocketServer -- "Broadcast to dispatchers" --> Admin
+    SocketServer -- "Broadcast to customer room" --> Customer
 
-    REST -- "Ingest Delivery" --> DispatchEngine
-    Admin -- "Manual Assign" --> REST
-    DispatchEngine -- "order_dispatch offer" --> SocketServer
+    REST -- "Create order" --> DispatchEngine
+    Admin -- "Assign courier" --> REST
+    DispatchEngine -- "Dispatch notification" --> SocketServer
     SocketServer -- "Dispatch alert" --> Rider
 
-    Rider -- "status_change (Accepted/Transit/Delivered)" --> SocketServer
+    Rider -- "Status change (Accept, Pickup, Deliver)" --> SocketServer
     SocketServer -- "Update order status" --> DispatchEngine
     DispatchEngine --> SMSMock
     DispatchEngine --> PrismaClient --> PostgresDB
@@ -75,117 +94,116 @@ flowchart TD
 
 ---
 
-## Feature Specifications
+## API Documentation
 
-### 1. Admin Operations Command Center (`/admin`)
-- **Fullscreen Live Map:** Mapbox GL with Carto Dark Matter rendering active drivers and active orders in Doha (Souq Waqif, West Bay, The Pearl-Qatar, Lusail Marina).
-- **Zero-Refresh Markers:** Driver vehicle markers rotate dynamically matching current heading angles (0–360°) and move smoothly upon incoming WebSocket pings.
-- **Unassigned Orders Drawer:** Real-time queue displaying newly placed deliveries with an instant **"Manual Assign"** action.
-- **Live Event Stream:** Chronological WebSocket telemetry log displaying live GPS pings and state transitions.
+The backend service provides complete OpenAPI 3.0.3 documentation accessible through the following endpoints:
 
-### 2. Rider Mobile Cockpit (`/rider`)
-- **Mobile-First PWA Layout:** High-contrast Ameba midnight dashboard optimized for motorcycle couriers.
-- **Three Core States:**
-  - `State 1 (Waiting):` Radar pulse animation listening for `order_dispatch` events.
-  - `State 2 (Offer Received):` High-contrast modal displaying pickup & dropoff coordinates with one-tap "Accept" CTA.
-  - `State 3 (In Transit):` Live speedometer HUD, `navigator.geolocation.watchPosition` GPS streaming, and package status transitions ("Mark Picked Up", "Mark Delivered").
-- **Interactive Doha Route Simulator:** Built-in test simulator navigating couriers through Doha's Corniche corridor to The Pearl-Qatar, allowing portfolio evaluators to test live vehicle motion without field walking.
+* Interactive Swagger UI: https://zeego.loghorizon.online/api/docs
+* OpenAPI Specification File: https://zeego.loghorizon.online/api/docs.json
 
-### 3. Customer Live Tracking (`/track/[orderId]`)
-- **Three-Stage Progress Bar:** `Preparing` ➔ `En Route` ➔ `Delivered` with dynamic completion gradient.
-- **Isolated WebSocket Room:** Automatically joins `order:${orderId}` room upon load, ensuring the customer only receives telemetry for their assigned driver.
-- **Courier Verification:** Displays courier name (Captain Tariq Al-Mansoor), vehicle unit, verified security badge, and direct call action.
+Key Endpoints:
 
-### 4. SMS Gateway Mock (Qatar Telecom)
-- Triggered on order assignment, pickup, and final drop-off.
-- Mocks carrier delivery to Ooredoo Qatar 5G network via structured console logs.
+* `GET /api/health`: Service health diagnostic reporting database, Redis connection status, and system uptime.
+* `GET /api/orders`: Query orders with status filtering (`PENDING`, `ASSIGNED`, `IN_TRANSIT`, `DELIVERED`).
+* `POST /api/orders`: Order creation with coordinate schema validation.
+* `GET /api/orders/{id}`: Detailed order status enriched with live driver telemetry from Redis.
+* `PATCH /api/orders/{id}/assign`: Courier assignment transitioning order state and triggering WebSocket dispatches.
+* `GET /api/drivers`: Active courier roster with availability status and last reported coordinates.
+* `POST /api/drivers/{id}/location`: High-frequency telemetry ingestion caching to Redis and broadcasting via WebSockets.
+* `POST /api/demo/reset`: Database and cache restoration for testing and evaluation.
 
 ---
 
-## Repository Structure
+## Demonstration Dataset
 
-```
-zgo/
-├── .gitignore
-├── LICENSE (MIT)
-├── README.md
-├── docker-compose.yml           # PostgreSQL 16 & Redis 7 containers
-├── package.json                 # Workspaces configuration (server + client)
-├── server/                      # Node.js + Express + TypeScript Backend
-│   ├── prisma/
-│   │   └── schema.prisma        # Order & Driver models (PostgreSQL)
-│   ├── src/
-│   │   ├── db/client.ts         # Prisma ORM + Transactional Fallback Repo
-│   │   ├── redis/client.ts      # Redis key-value cache (driver:{id}:location)
-│   │   ├── socket/index.ts      # Socket.io room multiplexer & event loop
-│   │   ├── routes/              # Express REST controllers (orders, drivers)
-│   │   ├── services/            # SMS gateway notification service
-│   │   └── server.ts            # HTTP server & WebSocket bootstrap
-│   ├── tsconfig.json
-│   └── package.json
-└── client/                      # Next.js 15 App Router Frontend
-    ├── src/
-    │   ├── app/
-    │   │   ├── page.tsx         # Mission Control Hub & 1-Click Order Injector
-    │   │   ├── admin/page.tsx   # Admin Operations Dashboard
-    │   │   ├── rider/page.tsx   # Rider Mobile Cockpit
-    │   │   └── track/[orderId]/ # Customer Live Tracking View
-    │   ├── components/
-    │   │   ├── MapboxMap.tsx    # High-performance dark map component
-    │   │   └── Navigation.tsx   # Ameba top bar with live socket status
-    │   ├── lib/
-    │   │   ├── socket.ts        # Singleton Socket.io connector
-    │   │   └── api.ts           # Typed REST client
-    │   └── styles/              # Ameba design tokens (Midnight Ink, Signal Blue, Arc Cyan)
-    ├── tailwind.config.ts
-    └── package.json
+To facilitate functional evaluation, an automated reset endpoint restores pre-configured couriers and deliveries in Doha:
+
+Couriers:
+* Tariq Al-Mansoor (`driver_1`): Yamaha MT-07, Status: AVAILABLE
+* Bilal Al-Kuwari (`driver_2`): Honda CB500X, Status: BUSY (En route to The Pearl-Qatar)
+* Fahad Al-Marri (`driver_3`): Toyota Hilux Cargo, Status: AVAILABLE
+
+Orders:
+* `ZG-QTR-9021`: Souq Waqif to West Bay Financial Tower (Status: PENDING)
+* `ZG-QTR-4482`: Villaggio Mall to Lusail Marina (Status: ASSIGNED)
+* `ZG-QTR-1194`: Katara Cultural Village to The Pearl-Qatar (Status: IN_TRANSIT)
+* `ZG-QTR-7720`: Doha Festival City to Al Sadd Sports Club (Status: DELIVERED)
+
+To reset the system to this initial state:
+```bash
+curl -X POST https://zeego.loghorizon.online/api/demo/reset
 ```
 
 ---
 
-## Quick Start & Verification
+## Automated Test Results
+
+The integration test suite validates all primary REST endpoints, coordinate validation rules, and in-memory cache operations:
+
+```bash
+npm run test
+```
+
+Execution Summary:
+```
+ PASS  src/__tests__/api.test.ts
+  Zeego Dispatch Engine API Test Suite
+    ✓ GET /api/health returns operational status (28 ms)
+    ✓ GET /api/docs.json serves valid OpenAPI 3.0.3 specification (6 ms)
+    ✓ GET /api/orders returns pre-seeded Doha orders (11 ms)
+    ✓ POST /api/orders rejects invalid pickup/dropoff coordinates (9 ms)
+    ✓ POST /api/orders ingests a valid parcel delivery successfully (14 ms)
+    ✓ GET /api/orders/:id returns order details with enriched driver telemetry (10 ms)
+    ✓ GET /api/drivers returns active fleet roster (8 ms)
+    ✓ POST /api/drivers/:id/location updates volatile GPS in Redis cache (12 ms)
+    ✓ POST /api/demo/reset successfully reinstates test dataset (15 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        1.428 s
+```
+
+---
+
+## Installation and Local Setup
 
 ### Prerequisites
-- Node.js 20+ installed.
-- (Optional) Docker & Docker Compose if running dedicated PostgreSQL and Redis containers. *The application includes an automated high-performance in-memory fallback layer, allowing immediate out-of-the-box execution with zero database setup.*
+* Node.js 20 or higher
+* npm 10 or higher
+* Optional: Docker and Docker Compose for dedicated PostgreSQL and Redis instances. The application includes an automatic in-memory fallback layer allowing standalone execution without external database containers.
 
-### 1. Install Dependencies
+### Setup Instructions
+
+1. Clone the repository:
+```bash
+git clone https://github.com/kisalnelaka/zgo.git
+cd zgo
+```
+
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-### 2. (Optional) Launch PostgreSQL & Redis via Docker
+3. Run automated tests:
 ```bash
-docker compose up -d
+npm run test
 ```
 
-### 3. Launch Development Environment
+4. Start development services:
 ```bash
-# Starts both the Express backend (:4000) and Next.js frontend (:3000)
 npm run dev
 ```
 
-### 4. Interactive Portfolio Testing Steps
-1. **Open Command Hub:** Navigate to `http://localhost:3000`.
-2. **Open Rider App in Tab A:** Navigate to `http://localhost:3000/rider`.
-3. **Open Admin Ops in Tab B:** Navigate to `http://localhost:3000/admin`.
-4. **Trigger Dispatch:** In Tab B (Admin Ops), click **"Manual Assign to Tariq"** on order `ZG-QTR-9021` (or click a 1-click preset from the Command Hub).
-5. **Accept in Tab A:** Observe the instant `order_dispatch` modal appear in the Rider Cockpit. Click **"ACCEPT DELIVERY ORDER"**.
-6. **Watch Real-Time Motion:** The Rider Cockpit launches the Doha Route Simulation. Switch to Tab B (Admin Ops) or open `http://localhost:3000/track/ZG-QTR-9021` to watch the vehicle marker move dynamically across Doha with zero page refreshes!
+The frontend application will be accessible at `http://localhost:3000` and the backend API at `http://localhost:4000`.
 
 ---
 
-## Ameba Design System Implementation
+## License
 
-Designed around the **Ameba Nocturnal Command Center** design specification:
-- **Canvas:** Midnight Ink (`#00052e`) deep background with atmospheric violet wash (`#06105a`).
-- **Brand Action:** Signal Blue (`#0428cb`) reserved for primary filled actions.
-- **Atmospheric Energy:** Arc Cyan (`#34fcff`) accents and glowing halos around telemetry markers.
-- **Typography:** Display styling with tight negative tracking, Open Sauce Sans for readable copy, and **IBM Plex Mono** for coordinates, order codes, and system chrome.
-- **Restraint:** Hairline borders (`#131e5c`), 8px border radii on cards/buttons, and flat frosted surfaces.
+Proprietary Evaluation and Candidate Demonstration License.  
+Copyright (c) 2026 Kisal Nelaka. All Rights Reserved.  
+Provided exclusively for candidate competency evaluation by prospective hiring teams. Commercial use, reproduction, redistribution, or derivation without an executed employment agreement is strictly prohibited. Refer to [LICENSE](./LICENSE) for full terms.
 
----
 
-## Author & Submission
-
-Developed for **Zeego Delivery (Qatar)** portfolio evaluation. Built with ruthless architectural modularity, strict typing, and production-ready resilience.

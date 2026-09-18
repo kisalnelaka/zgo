@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Navigation } from '@/components/Navigation';
 import { AuthProvider } from '@/lib/auth';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Zeego Delivery · Real-Time Last-Mile Dispatch Engine',
@@ -14,12 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
-        <AuthProvider>
-          <Navigation />
-          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
-        </AuthProvider>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="min-h-screen bg-md-surface text-md-on-surface antialiased selection:bg-md-primary selection:text-md-on-primary transition-colors duration-300">
+        <ThemeProvider>
+          <AuthProvider>
+            <Navigation />
+            <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

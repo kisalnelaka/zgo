@@ -17,7 +17,6 @@ import {
   Navigation as NavIcon,
   Compass,
   Zap,
-  Volume2,
 } from 'lucide-react';
 
 // Waypoints representing a realistic Doha delivery corridor along the Corniche to The Pearl:
@@ -206,59 +205,59 @@ export default function RiderCockpitPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#00052e] px-4 py-6 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-[calc(100vh-4rem)] bg-md-surface px-4 py-8 sm:px-6 lg:px-8 text-md-on-surface transition-colors duration-300">
       <div className="mx-auto flex max-w-5xl flex-col lg:flex-row items-center justify-center gap-8">
-        {/* Left Side: Desktop Companion Information & QR Code */}
+        {/* Left Side: Desktop Companion Information (Material You Surface Card) */}
         <div className="hidden lg:flex w-80 flex-col space-y-4">
-          <div className="rounded-[12px] border border-[#131e5c] bg-[#02093a]/80 p-5 backdrop-blur-xl">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#34fcff] font-mono">
+          <div className="rounded-[28px] border border-md-outline/15 bg-md-surface-container p-6 shadow-sm">
+            <div className="flex items-center gap-2 text-xs font-bold text-md-primary">
               <Smartphone className="h-4 w-4" />
-              <span>TEST ON YOUR MOBILE</span>
+              <span>TEST ON YOUR PHONE</span>
             </div>
-            <p className="mt-2 text-xs text-[#8185a0] leading-relaxed">
-              Install this PWA on your phone. You can walk around Doha or tap simulation mode, and watch your laptop screen track you live!
+            <p className="mt-2 text-xs text-md-on-surface-variant leading-relaxed">
+              Scan the QR code to open this cockpit on your mobile device. Stream real GPS telemetry while walking or trigger the Doha Corniche simulator!
             </p>
             <button
               onClick={() => setShowPhoneModal(true)}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-[8px] border border-[#34fcff]/50 bg-[#0428cb]/30 py-2.5 text-xs font-bold text-[#34fcff] shadow-cyan-glow hover:bg-[#0428cb]/50"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-md-primary py-2.5 text-xs font-medium text-md-on-primary shadow-sm hover:shadow-md hover:bg-md-primary/90 active:scale-95 transition-all"
             >
               <QrCode className="h-4 w-4" />
               <span>SHOW PHONE QR CODE</span>
             </button>
           </div>
 
-          <div className="rounded-[12px] border border-[#131e5c] bg-[#02093a]/80 p-5 font-mono text-xs text-[#afb4db] space-y-3">
-            <div className="text-white font-semibold">STATUS & TELEMETRY</div>
-            <div className="flex justify-between border-t border-[#131e5c] pt-2">
-              <span className="text-[#6b6b83]">CAPTAIN:</span>
-              <span className="text-white">Tariq Al-Mansoor</span>
+          <div className="rounded-[28px] border border-md-outline/15 bg-md-surface-container p-6 text-xs text-md-on-surface-variant space-y-3 shadow-sm">
+            <div className="text-md-on-surface font-bold">TELEMETRY DIAGNOSTIC</div>
+            <div className="flex justify-between border-t border-md-outline/10 pt-2 font-mono">
+              <span>CAPTAIN:</span>
+              <span className="text-md-on-surface font-semibold">{driverName}</span>
             </div>
-            <div className="flex justify-between border-t border-[#131e5c] pt-2">
-              <span className="text-[#6b6b83]">VEHICLE:</span>
-              <span className="text-white">Yamaha MT-07</span>
+            <div className="flex justify-between border-t border-md-outline/10 pt-2 font-mono">
+              <span>VEHICLE:</span>
+              <span className="text-md-on-surface">Yamaha MT-07</span>
             </div>
-            <div className="flex justify-between border-t border-[#131e5c] pt-2">
-              <span className="text-[#6b6b83]">GPS STREAM:</span>
-              <span className={isSimulating ? 'text-[#10b981]' : 'text-[#34fcff]'}>
-                {isSimulating ? 'SIM ACTIVE (2s)' : gpsMode === 'hardware' ? 'HARDWARE PHONE' : 'IDLE'}
+            <div className="flex justify-between border-t border-md-outline/10 pt-2 font-mono">
+              <span>GPS STREAM:</span>
+              <span className={isSimulating ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-md-primary font-bold'}>
+                {isSimulating ? 'SIM CORNICHE (2s)' : gpsMode === 'hardware' ? 'HARDWARE PHONE' : 'IDLE'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Center: Mobile Device Phone Frame */}
-        <div className="relative w-full max-w-sm rounded-[24px] border-4 border-[#131e5c] bg-[#00052e] shadow-2xl shadow-[#0428cb]/20 overflow-hidden flex flex-col h-[740px]">
+        {/* Center: Mobile Device Phone Frame (Material You Aesthetics) */}
+        <div className="relative w-full max-w-sm rounded-[36px] border-4 border-md-outline/20 bg-md-surface shadow-2xl overflow-hidden flex flex-col h-[740px]">
           {/* Mobile Top Status Notch */}
-          <div className="flex items-center justify-between border-b border-[#131e5c] bg-[#02093a] px-4 py-2.5 text-xs">
+          <div className="flex items-center justify-between border-b border-md-outline/15 bg-md-surface-container px-5 py-3 text-xs">
             <div className="flex items-center gap-2 font-mono">
-              <span className="h-2 w-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="font-bold text-white text-[11px]">ZEEGO CAPTAIN</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold text-md-on-surface text-[11px]">ZEEGO CAPTAIN</span>
             </div>
-            <span className="font-mono text-[10px] text-[#34fcff]">DOHA HQ · 5G</span>
+            <span className="font-mono text-[10px] text-md-primary font-semibold">DOHA HQ · 5G</span>
           </div>
 
           {/* Map Top 55% */}
-          <div className="relative h-[340px] w-full border-b border-[#131e5c]">
+          <div className="relative h-[340px] w-full border-b border-md-outline/15">
             <MapboxMap
               center={[currentCoords.lng, currentCoords.lat]}
               zoom={13.5}
@@ -278,22 +277,22 @@ export default function RiderCockpitPage() {
               followDriver={true}
             />
 
-            {/* Speedometer Overlay */}
-            <div className="absolute top-3 left-3 rounded-[8px] border border-[#131e5c] bg-[#00052e]/90 p-2.5 backdrop-blur-md shadow-md">
-              <span className="font-mono text-[9px] text-[#6b6b83]">SPEED</span>
-              <div className="font-mono text-xl font-bold text-[#34fcff]">
-                {currentCoords.speed.toFixed(0)} <span className="text-[10px] text-white">KM/H</span>
+            {/* Speedometer Overlay (Material You Tonal Surface) */}
+            <div className="absolute top-3 left-3 rounded-2xl border border-md-outline/15 bg-md-surface-container/90 p-2.5 backdrop-blur-md shadow-md">
+              <span className="font-mono text-[9px] text-md-on-surface-variant">SPEED</span>
+              <div className="font-mono text-xl font-bold text-md-primary">
+                {currentCoords.speed.toFixed(0)} <span className="text-[10px] text-md-on-surface">KM/H</span>
               </div>
             </div>
 
-            {/* Simulation / Hardware GPS Toggle */}
+            {/* Simulation / Hardware GPS Toggle (Material You Pills) */}
             <div className="absolute top-3 right-3 flex flex-col gap-1.5">
               <button
                 onClick={isSimulating ? stopSimulation : startSimulation}
-                className={`flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1.5 font-mono text-[10px] font-bold shadow-md transition-all ${
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[10px] font-bold shadow-md transition-all active:scale-95 ${
                   isSimulating
-                    ? 'border-[#10b981] bg-[#10b981]/25 text-[#10b981]'
-                    : 'border-[#34fcff]/60 bg-[#0428cb]/40 text-[#34fcff]'
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-md-primary text-md-on-primary hover:bg-md-primary/90'
                 }`}
               >
                 {isSimulating ? <Square className="h-3 w-3" /> : <Play className="h-3 w-3" />}
@@ -302,45 +301,45 @@ export default function RiderCockpitPage() {
 
               <button
                 onClick={startHardwareGPS}
-                className="flex items-center gap-1.5 rounded-[8px] border border-[#131e5c] bg-[#00052e]/90 px-2.5 py-1 font-mono text-[9px] text-[#afb4db] hover:text-white"
+                className="flex items-center gap-1.5 rounded-full border border-md-outline/25 bg-md-surface/90 px-3 py-1 font-mono text-[9px] text-md-on-surface hover:bg-md-surface-low"
               >
-                <Compass className="h-2.5 w-2.5 text-[#34fcff]" />
+                <Compass className="h-2.5 w-2.5 text-md-primary" />
                 <span>USE PHONE GPS</span>
               </button>
             </div>
           </div>
 
-          {/* Bottom Cockpit Controls */}
-          <div className="flex flex-1 flex-col justify-between bg-[#02093a]/90 p-4">
+          {/* Bottom Cockpit Controls (Material You Surface Container) */}
+          <div className="flex flex-1 flex-col justify-between bg-md-surface-container p-5">
             {/* STATE 1: Waiting */}
             {riderState === 1 && (
               <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <div className="relative mb-4 flex h-16 w-16 items-center justify-center">
-                  <div className="radar-ping absolute inset-0 rounded-full bg-[#0428cb]/40" />
-                  <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#0428cb] shadow-cyan-glow">
-                    <Radio className="h-7 w-7 text-[#34fcff] animate-pulse" />
+                <div className="relative mb-5 flex h-16 w-16 items-center justify-center">
+                  <div className="radar-ping absolute inset-0 rounded-full bg-md-primary/20" />
+                  <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-md-primary shadow-md">
+                    <Radio className="h-7 w-7 text-md-on-primary animate-pulse" />
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-white">Standing by in West Bay</h3>
-                <p className="mt-1 font-mono text-[11px] text-[#8185a0] max-w-[240px]">
-                  Listening for real-time dispatch offers. Click "Manual Assign" on laptop or use demo presets.
+                <h3 className="text-base font-bold text-md-on-surface">Standing by in West Bay</h3>
+                <p className="mt-1 text-xs text-md-on-surface-variant max-w-[240px] leading-relaxed">
+                  Listening for real-time dispatch offers. Click "Manual Assign" on the Admin tab or test the driving simulator!
                 </p>
 
-                <div className="mt-4 w-full rounded-[8px] border border-[#131e5c] bg-[#00052e] p-3 text-left">
-                  <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#34fcff]">
-                    <Zap className="h-3 w-3" />
+                <div className="mt-4 w-full rounded-2xl border border-md-outline/15 bg-md-surface p-3.5 text-left shadow-sm">
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] text-md-primary font-bold">
+                    <Zap className="h-3.5 w-3.5" />
                     <span>INSTANT DEMO TRIGGER:</span>
                   </div>
-                  <p className="mt-1 font-mono text-[10px] text-[#6b6b83]">
-                    Switch to Admin Ops tab and assign order, or tap below to test simulator!
+                  <p className="mt-1 text-[11px] text-md-on-surface-variant">
+                    Tap below to start simulated telemetry along Doha Corniche to The Pearl-Qatar!
                   </p>
                   <button
                     onClick={startSimulation}
-                    className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-[6px] bg-[#0428cb]/40 border border-[#34fcff]/50 py-2 font-mono text-xs text-[#34fcff] hover:bg-[#0428cb]"
+                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-md-secondary-container hover:bg-md-secondary-container/80 text-md-on-secondary-container py-2 text-xs font-medium active:scale-95 transition-all shadow-sm"
                   >
-                    <Play className="h-3.5 w-3.5" />
-                    <span>TEST SIMULATED GPS STREAM</span>
+                    <Play className="h-3.5 w-3.5 text-md-primary" />
+                    <span>TEST CORNICHE GPS SIMULATOR</span>
                   </button>
                 </div>
               </div>
@@ -349,34 +348,34 @@ export default function RiderCockpitPage() {
             {/* STATE 2: Order Received */}
             {riderState === 2 && activeOrder && (
               <div className="flex flex-1 flex-col justify-between animate-fadeIn">
-                <div className="rounded-[10px] border-2 border-[#34fcff] bg-[#00052e] p-3.5 shadow-cyan-glow">
-                  <div className="flex items-center justify-between border-b border-[#131e5c] pb-2">
-                    <span className="font-mono text-xs font-bold text-[#34fcff]">
+                <div className="rounded-2xl border-2 border-md-primary bg-md-surface p-4 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-md-outline/10 pb-2">
+                    <span className="font-mono text-xs font-bold text-md-primary">
                       DISPATCH OFFER
                     </span>
-                    <span className="font-mono text-xs text-white">#{activeOrder.trackingCode}</span>
+                    <span className="font-mono text-xs text-md-on-surface">#{activeOrder.trackingCode}</span>
                   </div>
 
-                  <div className="mt-2 text-sm font-bold text-white">{activeOrder.customerName}</div>
-                  <div className="text-xs text-[#afb4db] truncate">{activeOrder.itemsDescription}</div>
+                  <div className="mt-2.5 text-sm font-bold text-md-on-surface">{activeOrder.customerName}</div>
+                  <div className="text-xs text-md-on-surface-variant truncate">{activeOrder.itemsDescription}</div>
 
-                  <div className="mt-3 space-y-1.5 text-xs font-mono border-t border-[#131e5c] pt-2">
+                  <div className="mt-3 space-y-1.5 text-xs font-mono border-t border-md-outline/10 pt-2.5">
                     <div className="flex items-start gap-1.5">
-                      <span className="text-[#10b981] font-bold">A:</span>
-                      <span className="text-white truncate">{activeOrder.pickupAddress}</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">A:</span>
+                      <span className="text-md-on-surface truncate">{activeOrder.pickupAddress}</span>
                     </div>
                     <div className="flex items-start gap-1.5">
-                      <span className="text-[#ef4444] font-bold">B:</span>
-                      <span className="text-white truncate">{activeOrder.dropoffAddress}</span>
+                      <span className="text-md-tertiary font-bold">B:</span>
+                      <span className="text-md-on-surface truncate">{activeOrder.dropoffAddress}</span>
                     </div>
                   </div>
                 </div>
 
                 <button
                   onClick={handleAcceptOrder}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-[10px] bg-gradient-to-r from-[#0428cb] to-[#34fcff] py-3.5 text-sm font-bold text-white shadow-cyan-glow transition-transform active:scale-95"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-md-primary py-3.5 text-xs font-medium text-md-on-primary shadow-md hover:bg-md-primary/90 transition-all active:scale-95"
                 >
-                  <CheckCircle2 className="h-5 w-5 text-white" />
+                  <CheckCircle2 className="h-4 w-4" />
                   <span>ACCEPT DELIVERY ORDER</span>
                 </button>
               </div>
@@ -388,22 +387,22 @@ export default function RiderCockpitPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Truck className="h-4 w-4 text-[#34fcff]" />
-                      <span className="font-mono text-xs font-bold text-white">MISSION ACTIVE</span>
+                      <Truck className="h-4 w-4 text-md-primary" />
+                      <span className="font-mono text-xs font-bold text-md-on-surface">MISSION ACTIVE</span>
                     </div>
-                    <span className="rounded bg-[#10b981]/20 px-2 py-0.5 font-mono text-[10px] font-bold text-[#10b981]">
+                    <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
                       {activeOrder.status}
                     </span>
                   </div>
 
-                  <div className="rounded-[8px] border border-[#131e5c] bg-[#00052e] p-3 font-mono text-xs space-y-2">
+                  <div className="rounded-2xl border border-md-outline/15 bg-md-surface p-4 font-mono text-xs space-y-2.5 shadow-sm">
                     <div className="flex justify-between">
-                      <span className="text-[#6b6b83]">PARCEL:</span>
-                      <span className="text-white">#{activeOrder.trackingCode}</span>
+                      <span className="text-md-on-surface-variant">PARCEL:</span>
+                      <span className="text-md-on-surface font-semibold">#{activeOrder.trackingCode}</span>
                     </div>
-                    <div className="flex justify-between border-t border-[#131e5c] pt-1.5">
-                      <span className="text-[#6b6b83]">DESTINATION:</span>
-                      <span className="text-white truncate max-w-[150px]">{activeOrder.dropoffAddress}</span>
+                    <div className="flex justify-between border-t border-md-outline/10 pt-2">
+                      <span className="text-md-on-surface-variant">DESTINATION:</span>
+                      <span className="text-md-on-surface truncate max-w-[150px] font-semibold">{activeOrder.dropoffAddress}</span>
                     </div>
                   </div>
                 </div>
@@ -412,17 +411,17 @@ export default function RiderCockpitPage() {
                   {activeOrder.status === 'ASSIGNED' ? (
                     <button
                       onClick={handlePickedUp}
-                      className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-[#0428cb] py-3 text-xs font-bold text-white shadow-blue-glow hover:brightness-110 active:scale-95"
+                      className="flex w-full items-center justify-center gap-2 rounded-full bg-md-primary py-3.5 text-xs font-medium text-md-on-primary shadow-sm hover:shadow-md hover:bg-md-primary/90 active:scale-95 transition-all"
                     >
-                      <MapPin className="h-4 w-4 text-[#34fcff]" />
+                      <MapPin className="h-4 w-4" />
                       <span>CONFIRM PARCEL PICKED UP</span>
                     </button>
                   ) : (
                     <button
                       onClick={handleDelivered}
-                      className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-[#10b981] py-3 text-xs font-bold text-white shadow-[0_0_15px_#10b981] hover:brightness-110 active:scale-95"
+                      className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 py-3.5 text-xs font-medium text-white shadow-sm hover:shadow-md hover:bg-emerald-500 active:scale-95 transition-all"
                     >
-                      <CheckCircle2 className="h-4 w-4 text-white" />
+                      <CheckCircle2 className="h-4 w-4" />
                       <span>CONFIRM DROP-OFF (DELIVERED)</span>
                     </button>
                   )}

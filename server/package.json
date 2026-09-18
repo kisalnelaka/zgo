@@ -8,6 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "test": "node --experimental-vm-modules ../node_modules/jest/bin/jest.js --runInBand",
     "prisma:generate": "prisma generate",
     "seed": "tsx prisma/seed.ts"
   },
@@ -19,15 +20,22 @@
     "ioredis": "^5.6.0",
     "ioredis-mock": "^8.9.0",
     "socket.io": "^4.8.1",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.13.9",
+    "@types/supertest": "^7.2.1",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/uuid": "^10.0.0",
+    "jest": "^30.5.1",
     "prisma": "^6.4.1",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.12",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }
