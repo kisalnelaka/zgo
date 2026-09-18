@@ -46,6 +46,11 @@ export interface Order {
 
 export function getApiBase(): string {
   if (typeof window !== 'undefined') {
+    // If running on custom domain (e.g. zeego.loghorizon.online), reverse proxy routes /api/ directly to backend
+    if (window.location.port === '' || window.location.port === '80' || window.location.port === '443') {
+      return '';
+    }
+    // Local dev fallback (e.g. localhost:3000 -> localhost:4000)
     const host = window.location.hostname || 'localhost';
     return `${window.location.protocol}//${host}:4000`;
   }
