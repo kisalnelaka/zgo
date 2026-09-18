@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED
+}
+
+enum DriverStatus {
+  AVAILABLE
+  BUSY
+  OFFLINE
+}
+
+model Driver {
+  id         String       @id @default(uuid())
+  name       String
+  phone      String       @default("+974 5500 1234")
+  status     DriverStatus @default(AVAILABLE)
+  vehicle    String       @default("Yamaha MT-07 Delivery Unit")
+  currentLat Float        @default(25.3223)
+  currentLng Float        @default(51.5298)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  orders     Order[]
+
+  @@map("drivers")
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  trackingCode   String      @unique
+  customerName   String      @default("Fatima Al-Kuwari")
+  customerPhone  String      @default("+974 6600 5678")
+  itemsDescription String    @default("Express Parcel · Documents & Tech Pack")
+  pickupAddress  String      @default("Souq Waqif Heritage Hub, Doha")
+  pickupLat      Float
+  pickupLng      Float
+  dropoffAddress String      @default("Tower 22, Porto Arabia, The Pearl-Qatar")
+  dropoffLat     Float
+  dropoffLng     Float
+  status         OrderStatus @default(PENDING)
+  driverId       String?
+  driver         Driver?     @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@map("orders")
+}
