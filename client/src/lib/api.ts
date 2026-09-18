@@ -113,3 +113,18 @@ export async function assignOrder(orderId: string, driverId: string): Promise<Or
   const json = await res.json();
   return json.data;
 }
+
+export async function updateDriverLocationApi(
+  driverId: string,
+  telemetry: { lat: number; lng: number; heading?: number; speed?: number; accuracy?: number }
+): Promise<void> {
+  try {
+    await fetch(`${getApiBase()}/api/drivers/${driverId}/location`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(telemetry),
+    });
+  } catch {
+    // Non-blocking telemetry sync
+  }
+}
