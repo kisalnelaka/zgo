@@ -22,8 +22,8 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-md-primary font-bold text-md-on-primary text-sm shadow-md">
-            ZG
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white p-2 shadow-sm border border-md-outline/20">
+            <img src="/zeego-brand.png" alt="Zeego Delivery" className="h-full w-full object-contain" />
           </div>
           <h1 className="mt-4 text-2xl font-bold tracking-tight text-md-on-surface">
             Sign in to Zeego Pulse

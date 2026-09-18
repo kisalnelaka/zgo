@@ -37,7 +37,7 @@ const config: Config = {
         'status-danger': '#ef4444',
       },
       fontFamily: {
-        sans: ['Roboto', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
+        sans: ['Figtree', 'Manrope', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       borderRadius: {

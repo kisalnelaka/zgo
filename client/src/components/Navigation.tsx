@@ -55,15 +55,15 @@ export function Navigation() {
           {/* Brand */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-md-primary font-bold text-md-on-primary text-xs shadow-md transition-transform duration-300 group-hover:scale-105 active:scale-95">
-                ZG
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1 shadow-sm border border-md-outline/20 transition-transform duration-300 group-hover:scale-105 active:scale-95 overflow-hidden">
+                <img src="/zeego-brand.png" alt="Zeego Delivery" className="h-full w-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-bold tracking-tight text-md-on-surface flex items-center gap-1.5">
-                  Zeego <span className="text-md-primary font-normal">Pulse</span>
+                <span className="text-base font-extrabold tracking-tight text-md-on-surface flex items-center gap-1.5">
+                  Zeego <span className="text-md-primary font-bold">Pulse</span>
                 </span>
-                <span className="text-[10px] text-md-on-surface-variant font-mono">
-                  Qatar Last-Mile Engine
+                <span className="text-[10px] text-md-on-surface-variant font-medium tracking-wide">
+                  Smart Delivery Solutions
                 </span>
               </div>
             </Link>

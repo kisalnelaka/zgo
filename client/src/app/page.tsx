@@ -103,21 +103,21 @@ export default function OverviewPage() {
       <div className="pointer-events-none absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-md-secondary-container/30 blur-3xl" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-6xl space-y-12">
-        {/* Material You Hero Container */}
+        {/* Hero Container */}
         <section className="relative rounded-[32px] sm:rounded-[48px] bg-md-surface-container p-8 sm:p-14 shadow-sm border border-md-outline/10 text-center overflow-hidden">
-          <div className="inline-flex items-center gap-2 rounded-full bg-md-secondary-container px-4 py-1.5 text-xs font-medium text-md-on-secondary-container mb-6 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full bg-md-secondary-container px-4 py-1.5 text-xs font-semibold text-md-on-secondary-container mb-6 shadow-sm">
             <span className="h-2 w-2 rounded-full bg-md-primary animate-pulse" />
-            <span>Zeego Delivery Engine · Doha, Qatar</span>
+            <span>Fast. Safe. Reliable Deliveries. Doha, Qatar</span>
           </div>
 
-          <h1 className="text-3xl font-bold tracking-tight text-md-on-surface sm:text-5xl sm:leading-tight">
+          <h1 className="text-3xl font-extrabold tracking-tight text-md-on-surface sm:text-5xl sm:leading-tight">
             Real-Time Last-Mile <br />
             <span className="text-md-primary">Dispatch Engine</span>
           </h1>
 
           <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-md-on-surface-variant leading-relaxed font-normal">
-            High-throughput event-driven engine engineered to synchronize courier telemetry,
-            dispatcher operations, and customer tracking across Doha in real-time with sub-second latency.
+            Connecting businesses to customers with smart, secure, and seamless delivery solutions.
+            High-throughput event-driven architecture synchronizing courier telemetry, dispatch operations, and customer tracking across Qatar.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

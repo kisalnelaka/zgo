@@ -1,68 +1,70 @@
 @import 'mapbox-gl/dist/mapbox-gl.css';
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ==========================================================================
-   Material You (Material Design 3) Design Token System
-   Derived from Purple/Violet Seed: #6750A4
+   Zeego Delivery Qatar Design System
+   Brand Primary: #f6000a (Zeego Red)
+   Backgrounds: Off-white #FAFAFA / Luxury Dark #111111
+   Typography: Figtree (Primary UI) & Manrope (Body/Data)
    ========================================================================== */
 
 :root {
-  /* MD3 Light Mode Palette */
-  --md-surface: #FFFBFE;
-  --md-on-surface: #1C1B1F;
-  --md-primary: #6750A4;
+  /* Zeego Light Mode Palette */
+  --md-surface: #FAFAFA;
+  --md-on-surface: #121212;
+  --md-primary: #F6000A;
   --md-on-primary: #FFFFFF;
-  --md-secondary-container: #E8DEF8;
-  --md-on-secondary-container: #1D192B;
-  --md-tertiary: #7D5260;
+  --md-secondary-container: #FEECEE;
+  --md-on-secondary-container: #8C0005;
+  --md-tertiary: #222222;
   --md-on-tertiary: #FFFFFF;
-  --md-tertiary-container: #FFD8E4;
-  --md-on-tertiary-container: #31111D;
-  --md-surface-container: #F3EDF7;
-  --md-surface-low: #E7E0EC;
-  --md-outline: #79747E;
-  --md-on-surface-variant: #49454F;
+  --md-tertiary-container: #F0F0F0;
+  --md-on-tertiary-container: #121212;
+  --md-surface-container: #FFFFFF;
+  --md-surface-low: #F4F4F5;
+  --md-outline: #E4E4E7;
+  --md-on-surface-variant: #52525B;
 
-  /* Legacy tokens mapping for backward compatibility */
-  --color-midnight-ink: #F3EDF7;
-  --color-signal-blue: #6750A4;
-  --color-arc-cyan: #7D5260;
+  /* Legacy tokens mapping */
+  --color-midnight-ink: #FFFFFF;
+  --color-signal-blue: #F6000A;
+  --color-arc-cyan: #121212;
   --color-paper: #FFFFFF;
 }
 
 .dark {
-  /* MD3 Dark Mode Palette */
-  --md-surface: #141218;
-  --md-on-surface: #E6E1E5;
-  --md-primary: #D0BCFF;
-  --md-on-primary: #381E72;
-  --md-secondary-container: #4A4458;
-  --md-on-secondary-container: #E8DEF8;
-  --md-tertiary: #EFB8C8;
-  --md-on-tertiary: #492532;
-  --md-tertiary-container: #633B48;
-  --md-on-tertiary-container: #FFD8E4;
-  --md-surface-container: #211F26;
-  --md-surface-low: #1D1B20;
-  --md-outline: #938F99;
-  --md-on-surface-variant: #CAC4D0;
+  /* Zeego Dark Mode Palette */
+  --md-surface: #0C0C0E;
+  --md-on-surface: #F4F4F5;
+  --md-primary: #F6000A;
+  --md-on-primary: #FFFFFF;
+  --md-secondary-container: #2A1113;
+  --md-on-secondary-container: #FFB3B8;
+  --md-tertiary: #D4D4D8;
+  --md-on-tertiary: #18181B;
+  --md-tertiary-container: #27272A;
+  --md-on-tertiary-container: #F4F4F5;
+  --md-surface-container: #16161A;
+  --md-surface-low: #1F1F24;
+  --md-outline: #2E2E35;
+  --md-on-surface-variant: #A1A1AA;
 
   /* Legacy tokens mapping */
-  --color-midnight-ink: #141218;
-  --color-signal-blue: #D0BCFF;
-  --color-arc-cyan: #EFB8C8;
-  --color-paper: #211F26;
+  --color-midnight-ink: #0C0C0E;
+  --color-signal-blue: #F6000A;
+  --color-arc-cyan: #FF4D55;
+  --color-paper: #16161A;
 }
 
 body {
   background-color: var(--md-surface);
   color: var(--md-on-surface);
-  font-family: 'Roboto', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: 'Figtree', 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   overflow-x: hidden;
-  transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1), color 0.3s cubic-bezier(0.2, 0, 0, 1);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Custom Scrollbars */
