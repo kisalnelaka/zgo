@@ -44,24 +44,30 @@ export interface Order {
   updatedAt: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+export function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname || 'localhost';
+    return `${window.location.protocol}//${host}:4000`;
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+}
 
 export async function fetchOrders(): Promise<Order[]> {
-  const res = await fetch(`${API_BASE}/api/orders`, { cache: 'no-store' });
+  const res = await fetch(`${getApiBase()}/api/orders`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch orders');
   const json = await res.json();
   return json.data || [];
 }
 
 export async function fetchOrderById(idOrTracking: string): Promise<Order> {
-  const res = await fetch(`${API_BASE}/api/orders/${idOrTracking}`, { cache: 'no-store' });
+  const res = await fetch(`${getApiBase()}/api/orders/${idOrTracking}`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch order');
   const json = await res.json();
   return json.data;
 }
 
 export async function fetchDrivers(): Promise<Driver[]> {
-  const res = await fetch(`${API_BASE}/api/drivers`, { cache: 'no-store' });
+  const res = await fetch(`${getApiBase()}/api/drivers`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch drivers');
   const json = await res.json();
   return json.data || [];
@@ -79,7 +85,7 @@ export async function createOrder(data: {
   itemsDescription?: string;
   driverId?: string;
 }): Promise<Order> {
-  const res = await fetch(`${API_BASE}/api/orders`, {
+  const res = await fetch(`${getApiBase()}/api/orders`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -93,7 +99,7 @@ export async function createOrder(data: {
 }
 
 export async function assignOrder(orderId: string, driverId: string): Promise<Order> {
-  const res = await fetch(`${API_BASE}/api/orders/${orderId}/assign`, {
+  const res = await fetch(`${getApiBase()}/api/orders/${orderId}/assign`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ driverId }),

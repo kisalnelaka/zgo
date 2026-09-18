@@ -18,9 +18,9 @@ const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 4000;
 
-// Global Middleware
+// Global Middleware (Permit LAN phone access from 192.168.x.x)
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: true,
   credentials: true,
 }));
 app.use(express.json());
@@ -49,11 +49,11 @@ app.post('/api/demo/reset', async (_req, res) => {
   res.json({ success: true, message: 'Demo state reset successfully' });
 });
 
-server.listen(port, () => {
-  console.log(`\n⚡ [ZEEGO DISPATCH ENGINE] Operational on port ${port}`);
-  console.log(`🌐 REST API:    http://localhost:${port}/api/orders`);
-  console.log(`📡 WEBSOCKET:   ws://localhost:${port}`);
-  console.log(`📊 HEALTH:      http://localhost:${port}/api/health\n`);
+server.listen(Number(port), '0.0.0.0', () => {
+  console.log(`\n⚡ [ZEEGO DISPATCH ENGINE] Operational on port ${port} (0.0.0.0)`);
+  console.log(`🌐 REST API:    http://0.0.0.0:${port}/api/orders`);
+  console.log(`📡 WEBSOCKET:   ws://0.0.0.0:${port}`);
+  console.log(`📊 HEALTH:      http://0.0.0.0:${port}/api/health\n`);
 });
 
 export { app, server };
