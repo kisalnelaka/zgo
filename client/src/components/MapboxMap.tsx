@@ -21,7 +21,7 @@ interface MapboxMapProps {
 export function MapboxMap({
   center = [51.5310, 25.3280], // Doha center: [lng, lat]
   zoom = 12.8,
-  pitch = 30,
+  pitch = 25,
   bearing = 0,
   driverCoords,
   pickupCoords,
@@ -40,20 +40,17 @@ export function MapboxMap({
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // High-contrast, crystal-clear Dark Matter tile map with zero token DRM
-    const darkMatterStyle: maplibregl.StyleSpecification = {
+    // Free, official Esri World Dark Canvas tiles with zero API keys and NO watermarks
+    const darkMapStyle: maplibregl.StyleSpecification = {
       version: 8,
       sources: {
-        'carto-dark': {
+        'esri-dark': {
           type: 'raster',
           tiles: [
-            'https://a.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
-            'https://b.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
-            'https://c.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
-            'https://d.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
+            'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
           ],
           tileSize: 256,
-          attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
+          attribution: '&copy; Esri &copy; OpenStreetMap contributors',
         },
       },
       layers: [
@@ -61,18 +58,18 @@ export function MapboxMap({
           id: 'background',
           type: 'background',
           paint: {
-            'background-color': '#00052e',
+            'background-color': '#0f172a',
           },
         },
         {
-          id: 'carto-dark-tiles',
+          id: 'esri-dark-tiles',
           type: 'raster',
-          source: 'carto-dark',
+          source: 'esri-dark',
           minzoom: 0,
-          maxzoom: 19,
+          maxzoom: 18,
           paint: {
-            'raster-opacity': 0.92,
-            'raster-contrast': 0.15,
+            'raster-opacity': 0.95,
+            'raster-contrast': 0.1,
           },
         },
       ],
@@ -80,7 +77,7 @@ export function MapboxMap({
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: darkMatterStyle,
+      style: darkMapStyle,
       center,
       zoom,
       pitch,
@@ -89,10 +86,10 @@ export function MapboxMap({
       interactive,
     });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), 'top-right');
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
 
     map.on('load', () => {
-      // Add Route Glow and Core layers
+      // Add route polyline source
       map.addSource('route-line', {
         type: 'geojson',
         data: {
@@ -105,30 +102,28 @@ export function MapboxMap({
         },
       });
 
-      // Neon Signal Blue outer glow
+      // Subtle route outline
       map.addLayer({
-        id: 'route-glow',
+        id: 'route-casing',
         type: 'line',
         source: 'route-line',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#0428cb',
-          'line-width': 9,
-          'line-opacity': 0.65,
-          'line-blur': 3,
+          'line-color': '#1e3a8a',
+          'line-width': 7,
+          'line-opacity': 0.6,
         },
       });
 
-      // Electric Arc Cyan core
+      // Vivid route core
       map.addLayer({
         id: 'route-core',
         type: 'line',
         source: 'route-line',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#34fcff',
+          'line-color': '#38bdf8',
           'line-width': 3.5,
-          'line-opacity': 0.95,
         },
       });
     });
@@ -167,7 +162,7 @@ export function MapboxMap({
     }
   }, [routeCoordinates]);
 
-  // Update Driver Marker & smooth camera panning
+  // Update Driver Marker
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -177,16 +172,16 @@ export function MapboxMap({
 
       if (!driverMarkerRef.current) {
         const el = document.createElement('div');
-        el.className = 'driver-marker-container';
+        el.className = 'driver-marker-container cursor-pointer';
         el.innerHTML = `
-          <div class="relative flex flex-col items-center justify-center group cursor-pointer">
-            <div class="absolute -top-7 rounded-[4px] border border-[#34fcff]/50 bg-[#00052e]/90 px-2 py-0.5 font-mono text-[9px] font-bold text-[#34fcff] shadow-cyan-glow whitespace-nowrap">
-              CAPTAIN TARIQ
+          <div class="relative flex flex-col items-center">
+            <div class="mb-1 rounded bg-slate-900/90 px-2 py-0.5 text-[10px] font-semibold text-sky-400 border border-slate-700 shadow-md whitespace-nowrap">
+              Tariq (Driver)
             </div>
             <div class="relative flex items-center justify-center">
-              <div class="absolute -inset-3 rounded-full bg-[#34fcff]/25 animate-ping"></div>
-              <div class="relative h-10 w-10 rounded-full bg-[#0428cb] border-2 border-[#34fcff] flex items-center justify-center shadow-cyan-glow">
-                <svg id="vehicle-heading-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(${heading || 0}deg); transition: transform 0.4s ease-out;">
+              <span class="absolute -inset-1.5 rounded-full bg-sky-400/30 animate-ping"></span>
+              <div class="relative h-9 w-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-lg">
+                <svg id="vehicle-heading-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(${heading || 0}deg); transition: transform 0.3s ease;">
                   <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
                 </svg>
               </div>
@@ -223,12 +218,12 @@ export function MapboxMap({
       if (!pickupMarkerRef.current) {
         const el = document.createElement('div');
         el.innerHTML = `
-          <div class="relative flex flex-col items-center group cursor-pointer">
-            <div class="absolute -top-7 rounded-[4px] border border-[#10b981]/60 bg-[#00052e]/95 px-2 py-0.5 font-mono text-[9px] font-bold text-[#10b981] whitespace-nowrap shadow-lg">
-              PICKUP: ${pickupCoords.label?.slice(0, 16) || 'ORIGIN'}
+          <div class="relative flex flex-col items-center cursor-pointer">
+            <div class="mb-1 rounded bg-slate-900/90 px-2 py-0.5 text-[10px] font-medium text-emerald-400 border border-slate-700 shadow whitespace-nowrap">
+              Pickup: ${pickupCoords.label?.slice(0, 16) || 'Origin'}
             </div>
-            <div class="h-8 w-8 rounded-full bg-[#10b981] border-2 border-white flex items-center justify-center shadow-[0_0_12px_#10b981]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <div class="h-7 w-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
               </svg>
             </div>
@@ -252,12 +247,12 @@ export function MapboxMap({
       if (!dropoffMarkerRef.current) {
         const el = document.createElement('div');
         el.innerHTML = `
-          <div class="relative flex flex-col items-center group cursor-pointer">
-            <div class="absolute -top-7 rounded-[4px] border border-[#ef4444]/60 bg-[#00052e]/95 px-2 py-0.5 font-mono text-[9px] font-bold text-[#ef4444] whitespace-nowrap shadow-lg">
-              DROPOFF: ${dropoffCoords.label?.slice(0, 16) || 'DESTINATION'}
+          <div class="relative flex flex-col items-center cursor-pointer">
+            <div class="mb-1 rounded bg-slate-900/90 px-2 py-0.5 text-[10px] font-medium text-rose-400 border border-slate-700 shadow whitespace-nowrap">
+              Dropoff: ${dropoffCoords.label?.slice(0, 16) || 'Destination'}
             </div>
-            <div class="h-8 w-8 rounded-full bg-[#ef4444] border-2 border-white flex items-center justify-center shadow-[0_0_12px_#ef4444]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <div class="h-7 w-7 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
@@ -274,7 +269,7 @@ export function MapboxMap({
   }, [dropoffCoords]);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#00052e]">
+    <div className="relative h-full w-full overflow-hidden bg-slate-950">
       <div ref={mapContainerRef} className={className} />
     </div>
   );
