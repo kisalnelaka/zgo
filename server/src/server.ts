@@ -43,7 +43,7 @@ app.get('/api/docs.json', (_req, res) => {
 
 // Routes
 app.use('/api/orders', createOrdersRouter(socketServer));
-app.use('/api/drivers', createDriversRouter());
+app.use('/api/drivers', createDriversRouter(socketServer));
 
 // System Health & Telemetry Diagnostic
 app.get('/api/health', async (_req, res) => {

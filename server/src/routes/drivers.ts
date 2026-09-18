@@ -1,13 +1,18 @@
-/**
- * Zeego Dispatch Engine - Drivers REST Controller
- * Provides driver roster and direct Redis telemetry lookups.
- */
-
 import { Router, Request, Response } from 'express';
 import { db } from '../db/client.js';
 import { telemetryCache } from '../redis/client.js';
+import { SocketServer } from '../socket/index.js';
+import { z } from 'zod';
 
-export function createDriversRouter(): Router {
+const updateLocationSchema = z.object({
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  heading: z.number().min(0).max(360).optional(),
+  speed: z.number().min(0).optional(),
+  accuracy: z.number().optional(),
+});
+
+export function createDriversRouter(socketServer?: SocketServer): Router {
   const router = Router();
 
   /**
@@ -71,6 +76,42 @@ export function createDriversRouter(): Router {
       res.json({ success: true, data: telemetry });
     } catch (error) {
       console.error('[API] Error fetching driver telemetry:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  /**
+   * POST /api/drivers/:id/location
+   * High-frequency telemetry ingest updating Redis cache and broadcasting over WebSockets.
+   */
+  router.post('/:id/location', async (req: Request, res: Response): Promise<void> => {
+    try {
+      const driverId = String(req.params.id);
+      const parsed = updateLocationSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({ success: false, error: 'Invalid coordinate payload', details: parsed.error.issues });
+        return;
+      }
+
+      const telemetry = {
+        driverId,
+        lat: parsed.data.lat,
+        lng: parsed.data.lng,
+        heading: parsed.data.heading || 0,
+        speed: parsed.data.speed || 0,
+        accuracy: parsed.data.accuracy || 5,
+        timestamp: Date.now(),
+      };
+
+      await telemetryCache.updateDriverLocation(telemetry);
+
+      if (socketServer) {
+        socketServer.getIO().to('admin').emit('location_update', telemetry);
+      }
+
+      res.json({ success: true, data: telemetry });
+    } catch (error) {
+      console.error('[API] Error updating driver location:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });

@@ -115,10 +115,10 @@ export function createOrdersRouter(socketServer: SocketServer): Router {
   });
 
   /**
-   * POST /api/orders/:id/assign
-   * Manual dispatch from Admin Operations panel.
+   * POST or PATCH /api/orders/:id/assign
+   * Manual dispatch from Admin Operations panel or external integrations.
    */
-  router.post('/:id/assign', async (req: Request, res: Response): Promise<void> => {
+  const handleAssign = async (req: Request, res: Response): Promise<void> => {
     try {
       const { driverId } = req.body;
       if (!driverId) {
@@ -149,7 +149,10 @@ export function createOrdersRouter(socketServer: SocketServer): Router {
       console.error('[API] Error assigning order:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
-  });
+  };
+
+  router.post('/:id/assign', handleAssign);
+  router.patch('/:id/assign', handleAssign);
 
   return router;
 }

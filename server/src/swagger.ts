@@ -215,6 +215,51 @@ export const swaggerSpec = {
           404: { description: 'Order or driver not found' },
         },
       },
+      patch: {
+        tags: ['Orders'],
+        summary: 'Assign order to driver (PATCH alias)',
+        description: 'RESTful patch equivalent for courier assignment state transitions.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Order UUID',
+            schema: { type: 'string' },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['driverId'],
+                properties: {
+                  driverId: { type: 'string', example: 'driver_1' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Order assigned',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { $ref: '#/components/schemas/Order' },
+                  },
+                },
+              },
+            },
+          },
+          404: { description: 'Order or driver not found' },
+        },
+      },
     },
     '/api/drivers': {
       get: {
@@ -272,6 +317,55 @@ export const swaggerSpec = {
             },
           },
           404: { description: 'Driver not found' },
+        },
+      },
+      post: {
+        tags: ['Drivers'],
+        summary: 'Ingest high-frequency driver GPS telemetry',
+        description: 'Accepts real-time coordinates, heading, and speed, saves to Redis with rolling TTL, and broadcasts to admin map via WebSocket.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Driver UUID or ID',
+            schema: { type: 'string' },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['lat', 'lng'],
+                properties: {
+                  lat: { type: 'number', example: 25.3223 },
+                  lng: { type: 'number', example: 51.5298 },
+                  heading: { type: 'number', example: 45 },
+                  speed: { type: 'number', example: 35 },
+                  accuracy: { type: 'number', example: 5 },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Telemetry cached and broadcasted',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { $ref: '#/components/schemas/DriverTelemetry' },
+                  },
+                },
+              },
+            },
+          },
+          400: { description: 'Invalid coordinate payload' },
         },
       },
     },
