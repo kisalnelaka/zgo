@@ -82,6 +82,43 @@ describe('Zeego Last-Mile Dispatch Engine Core API', () => {
       expect(res.body.data.id).toBe('order_1');
       expect(res.body.data).toHaveProperty('driverLiveLocation');
     });
+
+    it('PATCH /api/orders/:id/assign should assign driver and return updated state', async () => {
+      const res = await request(app)
+        .patch('/api/orders/order_2/assign')
+        .send({ driverId: 'driver_2' });
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.status).toBe('ASSIGNED');
+      expect(res.body.data.driverId).toBe('driver_2');
+    });
+
+    it('PATCH /api/orders/:id/status should update delivery lifecycle to IN_TRANSIT and DELIVERED', async () => {
+      // Transition to IN_TRANSIT
+      const inTransitRes = await request(app)
+        .patch('/api/orders/order_2/status')
+        .send({ status: 'IN_TRANSIT' });
+      expect(inTransitRes.status).toBe(200);
+      expect(inTransitRes.body.success).toBe(true);
+      expect(inTransitRes.body.data.status).toBe('IN_TRANSIT');
+
+      // Transition to DELIVERED
+      const deliveredRes = await request(app)
+        .patch('/api/orders/order_2/status')
+        .send({ status: 'DELIVERED' });
+      expect(deliveredRes.status).toBe(200);
+      expect(deliveredRes.body.success).toBe(true);
+      expect(deliveredRes.body.data.status).toBe('DELIVERED');
+    });
+
+    it('PATCH /api/orders/:id/status should reject invalid status string', async () => {
+      const res = await request(app)
+        .patch('/api/orders/order_2/status')
+        .send({ status: 'INVALID_STATUS' });
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toContain('Invalid status');
+    });
   });
 
   describe('Drivers & Redis Telemetry Cache', () => {
@@ -94,6 +131,31 @@ describe('Zeego Last-Mile Dispatch Engine Core API', () => {
       expect(tariq).toBeDefined();
       expect(tariq.name).toBe('Tariq Al-Mansoor');
       expect(tariq).toHaveProperty('liveTelemetry');
+    });
+
+    it('POST /api/drivers/:id/location should ingest high-frequency telemetry into Redis', async () => {
+      const res = await request(app)
+        .post('/api/drivers/driver_1/location')
+        .send({
+          lat: 25.3223,
+          lng: 51.5298,
+          heading: 65,
+          speed: 48,
+          accuracy: 4,
+        });
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.driverId).toBe('driver_1');
+      expect(res.body.data.speed).toBe(48);
+    });
+
+    it('GET /api/drivers/:id/location should retrieve cached telemetry from Redis', async () => {
+      const res = await request(app).get('/api/drivers/driver_1/location');
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.driverId).toBe('driver_1');
+      expect(res.body.data.lat).toBe(25.3223);
+      expect(res.body.data.lng).toBe(51.5298);
     });
 
     it('telemetryCache should store and retrieve high-frequency GPS pings with heading and speed', async () => {

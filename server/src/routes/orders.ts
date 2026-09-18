@@ -154,5 +154,57 @@ export function createOrdersRouter(socketServer: SocketServer): Router {
   router.post('/:id/assign', handleAssign);
   router.patch('/:id/assign', handleAssign);
 
+  /**
+   * PATCH /api/orders/:id/status
+   * Update order status across lifecycle (PENDING -> ASSIGNED -> IN_TRANSIT -> DELIVERED).
+   */
+  router.patch('/:id/status', async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { status } = req.body;
+      const validStatuses = ['PENDING', 'ASSIGNED', 'IN_TRANSIT', 'DELIVERED'];
+      if (!status || !validStatuses.includes(status)) {
+        res.status(400).json({
+          success: false,
+          error: `Invalid status. Must be one of: ${validStatuses.join(', ')}`,
+        });
+        return;
+      }
+
+      const orderId = String(req.params.id);
+      const updatedOrder = await db.updateOrderStatus(orderId, status);
+      if (!updatedOrder) {
+        res.status(404).json({ success: false, error: 'Order not found' });
+        return;
+      }
+
+      // Customer SMS Notification Triggers
+      if (status === 'IN_TRANSIT' && updatedOrder.driverId) {
+        const driver = await db.getDriverById(updatedOrder.driverId);
+        NotificationService.notifyOrderInTransit(
+          updatedOrder.customerPhone,
+          updatedOrder.customerName,
+          updatedOrder.trackingCode,
+          driver?.name || 'Assigned Driver'
+        );
+      } else if (status === 'DELIVERED') {
+        NotificationService.notifyOrderDelivered(
+          updatedOrder.customerPhone,
+          updatedOrder.customerName,
+          updatedOrder.trackingCode
+        );
+      }
+
+      // Broadcast real-time status update to admin and tracking rooms
+      socketServer.getIO().to('admin').emit('order_status_updated', updatedOrder);
+      socketServer.getIO().to(`order:${orderId}`).emit('order_status_updated', updatedOrder);
+      socketServer.getIO().to(`order:${updatedOrder.trackingCode}`).emit('order_status_updated', updatedOrder);
+
+      res.json({ success: true, data: updatedOrder });
+    } catch (error) {
+      console.error('[API] Error updating order status:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
   return router;
 }

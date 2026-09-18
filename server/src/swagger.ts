@@ -261,6 +261,58 @@ export const swaggerSpec = {
         },
       },
     },
+    '/api/orders/{id}/status': {
+      patch: {
+        tags: ['Orders'],
+        summary: 'Update delivery lifecycle status',
+        description: 'Transitions order state across PENDING, ASSIGNED, IN_TRANSIT, and DELIVERED. Automatically sends customer notifications and broadcasts real-time WebSocket events to Admin and Tracking rooms.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Order UUID',
+            schema: { type: 'string' },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['status'],
+                properties: {
+                  status: {
+                    type: 'string',
+                    enum: ['PENDING', 'ASSIGNED', 'IN_TRANSIT', 'DELIVERED'],
+                    example: 'IN_TRANSIT',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Order status updated successfully',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { $ref: '#/components/schemas/Order' },
+                  },
+                },
+              },
+            },
+          },
+          400: { description: 'Invalid status value' },
+          404: { description: 'Order not found' },
+        },
+      },
+    },
     '/api/drivers': {
       get: {
         tags: ['Drivers'],
