@@ -1,26 +1,68 @@
 @import 'mapbox-gl/dist/mapbox-gl.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Material You (Material Design 3) Design Token System
+   Derived from Purple/Violet Seed: #6750A4
+   ========================================================================== */
+
 :root {
-  --color-midnight-ink: #00052e;
-  --color-signal-blue: #0428cb;
-  --color-arc-cyan: #34fcff;
-  --color-halo-violet: #afb4db;
-  --color-carbon: #222222;
-  --color-slate-body: #4f5166;
-  --color-fog: #6b6b83;
-  --color-mist: #8185a0;
-  --color-silver-border: #dbdcdf;
-  --color-paper: #ffffff;
+  /* MD3 Light Mode Palette */
+  --md-surface: #FFFBFE;
+  --md-on-surface: #1C1B1F;
+  --md-primary: #6750A4;
+  --md-on-primary: #FFFFFF;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary-container: #1D192B;
+  --md-tertiary: #7D5260;
+  --md-on-tertiary: #FFFFFF;
+  --md-tertiary-container: #FFD8E4;
+  --md-on-tertiary-container: #31111D;
+  --md-surface-container: #F3EDF7;
+  --md-surface-low: #E7E0EC;
+  --md-outline: #79747E;
+  --md-on-surface-variant: #49454F;
+
+  /* Legacy tokens mapping for backward compatibility */
+  --color-midnight-ink: #F3EDF7;
+  --color-signal-blue: #6750A4;
+  --color-arc-cyan: #7D5260;
+  --color-paper: #FFFFFF;
+}
+
+.dark {
+  /* MD3 Dark Mode Palette */
+  --md-surface: #141218;
+  --md-on-surface: #E6E1E5;
+  --md-primary: #D0BCFF;
+  --md-on-primary: #381E72;
+  --md-secondary-container: #4A4458;
+  --md-on-secondary-container: #E8DEF8;
+  --md-tertiary: #EFB8C8;
+  --md-on-tertiary: #492532;
+  --md-tertiary-container: #633B48;
+  --md-on-tertiary-container: #FFD8E4;
+  --md-surface-container: #211F26;
+  --md-surface-low: #1D1B20;
+  --md-outline: #938F99;
+  --md-on-surface-variant: #CAC4D0;
+
+  /* Legacy tokens mapping */
+  --color-midnight-ink: #141218;
+  --color-signal-blue: #D0BCFF;
+  --color-arc-cyan: #EFB8C8;
+  --color-paper: #211F26;
 }
 
 body {
-  background-color: #00052e;
-  color: #ffffff;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  font-family: 'Roboto', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1), color 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Custom Scrollbars */
@@ -30,31 +72,31 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #00052e;
+  background: var(--md-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #131e5c;
-  border-radius: 3px;
+  background: var(--md-surface-low);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #34fcff;
+  background: var(--md-primary);
 }
 
 /* Pulse Animations for Dispatch & Markers */
 @keyframes radar-pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(52, 252, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(103, 80, 164, 0.7);
   }
   70% {
     transform: scale(1.4);
-    box-shadow: 0 0 0 14px rgba(52, 252, 255, 0);
+    box-shadow: 0 0 0 14px rgba(103, 80, 164, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(52, 252, 255, 0);
+    box-shadow: 0 0 0 0 rgba(103, 80, 164, 0);
   }
 }
 
@@ -64,42 +106,47 @@ body {
 
 /* Mapbox Marker Customizations */
 .driver-marker-container {
-  transition: transform 0.4s ease-out;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .driver-marker-pulse {
-  width: 32px;
-  height: 32px;
-  background-color: #0428cb;
-  border: 2px solid #34fcff;
+  width: 34px;
+  height: 34px;
+  background-color: var(--md-primary);
+  border: 2.5px solid var(--md-surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 12px rgba(52, 252, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.driver-marker-pulse:hover {
+  transform: scale(1.15);
 }
 
 .pickup-marker {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   background-color: #10b981;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--md-surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
 }
 
 .dropoff-marker {
-  width: 24px;
-  height: 24px;
-  background-color: #ef4444;
-  border: 2px solid #ffffff;
+  width: 26px;
+  height: 26px;
+  background-color: var(--md-tertiary);
+  border: 2px solid var(--md-surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  box-shadow: 0 2px 8px rgba(125, 82, 96, 0.4);
 }

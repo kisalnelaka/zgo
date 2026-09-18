@@ -24,6 +24,7 @@ import {
   Smartphone,
   ChevronRight,
   X,
+  RotateCcw,
 } from 'lucide-react';
 
 interface TelemetryPing {
@@ -46,10 +47,11 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'PENDING' | 'IN_TRANSIT' | 'DELIVERED'>('ALL');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   // New Order Form state
   const [newPickupAddress, setNewPickupAddress] = useState('Souq Waqif Logistics Hub');
-  const [newDropoffAddress, setNewDropoffAddress] = useState('Tower 18, Porto Arabia, The Pearl');
+  const [newDropoffAddress, setNewDropoffAddress] = useState('Tower 18, Porto Arabia, The Pearl-Qatar');
   const [newCustomerName, setNewCustomerName] = useState('Hamad Al-Thani');
   const [newCustomerPhone, setNewCustomerPhone] = useState('+974 5588 9911');
   const [newItemsDesc, setNewItemsDesc] = useState('Express Documents & Food Basket');
@@ -124,6 +126,18 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleResetDemoState = async () => {
+    setIsResetting(true);
+    try {
+      await fetch('/api/demo/reset', { method: 'POST' });
+      await loadData();
+    } catch (err) {
+      console.error('Failed to reset demo dataset:', err);
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   const handleCreateOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -184,21 +198,31 @@ export default function AdminDashboardPage() {
   const activeMapOrder = selectedOrder || pendingOrders[0] || inTransitOrders[0] || orders[0];
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-slate-950 text-slate-100">
-      {/* Top Header & Navigation Tabs */}
-      <div className="border-b border-slate-800 bg-slate-900/50 px-6 py-4">
+    <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-md-surface text-md-on-surface transition-colors duration-300">
+      {/* Top Header & Navigation Tabs (Material You Container) */}
+      <div className="border-b border-md-outline/15 bg-md-surface-container px-6 py-4">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">Operations Command</h1>
-            <p className="text-xs text-slate-400">
+            <h1 className="text-xl font-bold tracking-tight text-md-on-surface">Operations Command</h1>
+            <p className="text-xs text-md-on-surface-variant">
               Live fleet management and automated delivery dispatch in Doha, Qatar.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleResetDemoState}
+              disabled={isResetting}
+              className="flex items-center gap-1.5 rounded-full border border-md-outline/25 bg-md-surface hover:bg-md-surface-low text-md-on-surface px-4 py-2 text-xs font-medium shadow-sm active:scale-95 transition-all"
+              title="Reinstate 3 couriers and 4 Doha orders"
+            >
+              <RotateCcw className={`h-3.5 w-3.5 text-md-primary ${isResetting ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">{isResetting ? 'Resetting...' : 'Reset Demo Data'}</span>
+            </button>
+
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-500 transition-all active:scale-95"
+              className="flex items-center gap-1.5 rounded-full bg-md-primary px-4 py-2 text-xs font-medium text-md-on-primary shadow-sm hover:shadow-md hover:bg-md-primary/90 transition-all active:scale-95"
             >
               <Plus className="h-4 w-4" />
               <span>New Delivery</span>
@@ -206,95 +230,95 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="mx-auto mt-4 flex max-w-7xl gap-2 border-t border-slate-800/80 pt-3">
+        {/* Material You Tab Pills */}
+        <div className="mx-auto mt-4 flex max-w-7xl gap-2 border-t border-md-outline/10 pt-3">
           <button
             onClick={() => setActiveTab('map')}
-            className={`flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 active:scale-95 ${
               activeTab === 'map'
-                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-md-secondary-container text-md-on-secondary-container shadow-sm font-semibold'
+                : 'text-md-on-surface-variant hover:text-md-on-surface hover:bg-md-surface-low'
             }`}
           >
-            <Compass className="h-3.5 w-3.5" />
+            <Compass className="h-3.5 w-3.5 text-md-primary" />
             <span>Live Dispatch Map</span>
           </button>
 
           <button
             onClick={() => setActiveTab('orders')}
-            className={`flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 active:scale-95 ${
               activeTab === 'orders'
-                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-md-secondary-container text-md-on-secondary-container shadow-sm font-semibold'
+                : 'text-md-on-surface-variant hover:text-md-on-surface hover:bg-md-surface-low'
             }`}
           >
-            <List className="h-3.5 w-3.5" />
+            <List className="h-3.5 w-3.5 text-md-primary" />
             <span>Orders Table ({orders.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('analytics')}
-            className={`flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 active:scale-95 ${
               activeTab === 'analytics'
-                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-md-secondary-container text-md-on-secondary-container shadow-sm font-semibold'
+                : 'text-md-on-surface-variant hover:text-md-on-surface hover:bg-md-surface-low'
             }`}
           >
-            <BarChart3 className="h-3.5 w-3.5" />
+            <BarChart3 className="h-3.5 w-3.5 text-md-primary" />
             <span>Fleet Analytics</span>
           </button>
 
           <button
             onClick={() => setActiveTab('fleet')}
-            className={`flex items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-300 active:scale-95 ${
               activeTab === 'fleet'
-                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-md-secondary-container text-md-on-secondary-container shadow-sm font-semibold'
+                : 'text-md-on-surface-variant hover:text-md-on-surface hover:bg-md-surface-low'
             }`}
           >
-            <Users className="h-3.5 w-3.5" />
+            <Users className="h-3.5 w-3.5 text-md-primary" />
             <span>Couriers Roster ({drivers.length})</span>
           </button>
         </div>
       </div>
 
-      {/* Metric Cards Row */}
-      <div className="border-b border-slate-800 bg-slate-900/30 px-6 py-4">
+      {/* Metric Cards Row (Material You Tonal Surfaces) */}
+      <div className="border-b border-md-outline/15 bg-md-surface-container/50 px-6 py-4">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 md:grid-cols-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <span className="text-xs font-medium text-slate-400">Active Fleet</span>
+          <div className="rounded-2xl border border-md-outline/10 bg-md-surface p-4 shadow-sm">
+            <span className="text-xs font-medium text-md-on-surface-variant">Active Fleet</span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-white">{drivers.length}</span>
-              <span className="text-xs text-emerald-400 font-medium">100% Online</span>
+              <span className="text-2xl font-bold text-md-on-surface">{drivers.length}</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">100% Online</span>
             </div>
-            <span className="text-[11px] text-slate-500">Ready in West Bay</span>
+            <span className="text-[11px] text-md-on-surface-variant">Ready in Doha</span>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <span className="text-xs font-medium text-slate-400">Unassigned Orders</span>
+          <div className="rounded-2xl border border-md-outline/10 bg-md-surface p-4 shadow-sm">
+            <span className="text-xs font-medium text-md-on-surface-variant">Unassigned Orders</span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-amber-400">{pendingOrders.length}</span>
-              <span className="text-xs text-slate-400">Pending</span>
+              <span className="text-2xl font-bold text-amber-500">{pendingOrders.length}</span>
+              <span className="text-xs text-md-on-surface-variant">Pending</span>
             </div>
-            <span className="text-[11px] text-slate-500">Awaiting allocation</span>
+            <span className="text-[11px] text-md-on-surface-variant">Awaiting allocation</span>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <span className="text-xs font-medium text-slate-400">In Transit</span>
+          <div className="rounded-2xl border border-md-outline/10 bg-md-surface p-4 shadow-sm">
+            <span className="text-xs font-medium text-md-on-surface-variant">In Transit</span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-sky-400">{inTransitOrders.length}</span>
-              <span className="text-xs text-slate-400">En Route</span>
+              <span className="text-2xl font-bold text-md-primary">{inTransitOrders.length}</span>
+              <span className="text-xs text-md-on-surface-variant">En Route</span>
             </div>
-            <span className="text-[11px] text-slate-500">Streaming live telemetry</span>
+            <span className="text-[11px] text-md-on-surface-variant">Streaming live telemetry</span>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <span className="text-xs font-medium text-slate-400">Completed Today</span>
+          <div className="rounded-2xl border border-md-outline/10 bg-md-surface p-4 shadow-sm">
+            <span className="text-xs font-medium text-md-on-surface-variant">Completed Today</span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-emerald-400">{deliveredOrders.length}</span>
-              <span className="text-xs text-emerald-400 font-medium">98.4% On-Time</span>
+              <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{deliveredOrders.length}</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">98.4% SLA</span>
             </div>
-            <span className="text-[11px] text-slate-500">Avg 22.4 mins</span>
+            <span className="text-[11px] text-md-on-surface-variant">Avg 22.4 mins</span>
           </div>
         </div>
       </div>
@@ -305,7 +329,7 @@ export default function AdminDashboardPage() {
         {activeTab === 'map' && (
           <div className="flex h-[calc(100vh-17rem)] w-full overflow-hidden">
             {/* Main Map */}
-            <div className="relative flex-1 bg-slate-950">
+            <div className="relative flex-1 bg-md-surface">
               <MapboxMap
                 center={[51.5310, 25.3280]}
                 zoom={12.8}
@@ -324,21 +348,21 @@ export default function AdminDashboardPage() {
 
               {/* Courier Status Toast */}
               {activeDriver && (
-                <div className="absolute top-4 left-4 z-10 w-72 rounded-lg border border-slate-800 bg-slate-900/90 p-3.5 backdrop-blur-md shadow-lg">
+                <div className="absolute top-4 left-4 z-10 w-72 rounded-2xl border border-md-outline/20 bg-md-surface-container/95 p-4 backdrop-blur-md shadow-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white">{activeDriver.name}</span>
-                    <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                    <span className="text-xs font-bold text-md-on-surface">{activeDriver.name}</span>
+                    <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                       {activeDriver.status}
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-400">{activeDriver.vehicle}</div>
-                  <div className="mt-2.5 flex items-center justify-between border-t border-slate-800 pt-2 text-[11px] font-mono">
-                    <span className="text-slate-400">Speed:</span>
-                    <span className="text-sky-400 font-bold">
+                  <div className="text-[11px] text-md-on-surface-variant mt-0.5">{activeDriver.vehicle}</div>
+                  <div className="mt-2.5 flex items-center justify-between border-t border-md-outline/15 pt-2 text-[11px] font-mono">
+                    <span className="text-md-on-surface-variant">Speed:</span>
+                    <span className="text-md-primary font-bold">
                       {(driverLocations[activeDriver.id]?.speed ?? 0).toFixed(0)} km/h
                     </span>
-                    <span className="text-slate-400">Heading:</span>
-                    <span className="text-slate-200">
+                    <span className="text-md-on-surface-variant">Heading:</span>
+                    <span className="text-md-on-surface">
                       {(driverLocations[activeDriver.id]?.heading ?? 0).toFixed(0)}°
                     </span>
                   </div>
@@ -346,46 +370,46 @@ export default function AdminDashboardPage() {
               )}
             </div>
 
-            {/* Unassigned Queue Sidebar */}
-            <div className="flex w-96 flex-col border-l border-slate-800 bg-slate-900/90 backdrop-blur-md">
-              <div className="border-b border-slate-800 p-4">
-                <h3 className="text-sm font-semibold text-white">Unassigned Orders ({pendingOrders.length})</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Click dispatch to send directly to rider</p>
+            {/* Unassigned Queue Sidebar (Material You Surface) */}
+            <div className="flex w-96 flex-col border-l border-md-outline/15 bg-md-surface-container/95 backdrop-blur-md">
+              <div className="border-b border-md-outline/15 p-4">
+                <h2 className="text-sm font-bold text-md-on-surface">Unassigned Orders ({pendingOrders.length})</h2>
+                <p className="text-xs text-md-on-surface-variant mt-0.5">Click dispatch to allocate directly to courier</p>
               </div>
 
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {pendingOrders.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center p-8 text-center text-slate-400">
-                    <CheckCircle2 className="h-8 w-8 text-emerald-400 mb-2" />
-                    <span className="text-xs font-medium text-slate-300">All orders dispatched</span>
-                    <span className="text-[11px] text-slate-500 mt-1">Use "New Delivery" to create one</span>
+                  <div className="flex flex-col items-center justify-center p-8 text-center text-md-on-surface-variant">
+                    <CheckCircle2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400 mb-2" />
+                    <span className="text-xs font-medium text-md-on-surface">All orders dispatched</span>
+                    <span className="text-[11px] text-md-on-surface-variant mt-1">Use "New Delivery" to create one</span>
                   </div>
                 ) : (
                   pendingOrders.map((order) => (
                     <div
                       key={order.id}
                       onClick={() => setSelectedOrder(order)}
-                      className={`cursor-pointer rounded-lg border p-3.5 transition-all ${
+                      className={`cursor-pointer rounded-2xl border p-4 transition-all duration-300 ${
                         selectedOrder?.id === order.id
-                          ? 'border-blue-500 bg-slate-800/80 shadow-md'
-                          : 'border-slate-800 bg-slate-950/70 hover:border-slate-700'
+                          ? 'border-md-primary bg-md-secondary-container shadow-md'
+                          : 'border-md-outline/15 bg-md-surface hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-bold text-sky-400">
+                        <span className="font-mono text-xs font-bold text-md-primary">
                           #{order.trackingCode}
                         </span>
-                        <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-400">
+                        <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
                           PENDING
                         </span>
                       </div>
 
-                      <div className="mt-1.5 text-xs font-semibold text-white">{order.customerName}</div>
-                      <div className="text-[11px] text-slate-400 truncate">{order.itemsDescription}</div>
+                      <div className="mt-2 text-xs font-bold text-md-on-surface">{order.customerName}</div>
+                      <div className="text-[11px] text-md-on-surface-variant truncate">{order.itemsDescription}</div>
 
-                      <div className="mt-2.5 space-y-1 text-[11px] border-t border-slate-800/80 pt-2 font-mono">
-                        <div className="text-slate-300 truncate">📍 Pickup: {order.pickupAddress}</div>
-                        <div className="text-slate-300 truncate">🏁 Dropoff: {order.dropoffAddress}</div>
+                      <div className="mt-3 space-y-1 text-[11px] border-t border-md-outline/15 pt-2 font-mono">
+                        <div className="text-md-on-surface-variant truncate">📍 Pickup: {order.pickupAddress}</div>
+                        <div className="text-md-on-surface-variant truncate">🏁 Dropoff: {order.dropoffAddress}</div>
                       </div>
 
                       <button
@@ -394,7 +418,7 @@ export default function AdminDashboardPage() {
                           if (drivers[0]) handleManualAssign(order.id, drivers[0].id);
                         }}
                         disabled={assigningId === order.id || drivers.length === 0}
-                        className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-md bg-blue-600 py-2 text-xs font-semibold text-white hover:bg-blue-500 transition-all disabled:opacity-50"
+                        className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-full bg-md-primary py-2 text-xs font-medium text-md-on-primary hover:bg-md-primary/90 transition-all active:scale-95 disabled:opacity-50 shadow-sm"
                       >
                         <Send className="h-3 w-3" />
                         <span>{assigningId === order.id ? 'Dispatching...' : 'Dispatch to Tariq'}</span>
@@ -410,28 +434,28 @@ export default function AdminDashboardPage() {
         {/* TAB 2: ORDERS TABLE & MANAGEMENT */}
         {activeTab === 'orders' && (
           <div className="mx-auto max-w-7xl p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
               <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-md-on-surface-variant" />
                 <input
                   type="text"
                   placeholder="Search tracking #, customer, address..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 py-2 pl-9 pr-4 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
+                  className="w-full h-11 rounded-full border border-md-outline/20 bg-md-surface-container py-2 pl-10 pr-4 text-xs text-md-on-surface placeholder-md-on-surface-variant/60 outline-none focus:border-md-primary shadow-sm"
                 />
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Status:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-md-on-surface-variant mr-1">Status:</span>
                 {(['ALL', 'PENDING', 'IN_TRANSIT', 'DELIVERED'] as const).map((st) => (
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all active:scale-95 ${
                       statusFilter === st
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                        ? 'bg-md-primary text-md-on-primary shadow-sm'
+                        : 'bg-md-surface-container text-md-on-surface-variant hover:text-md-on-surface border border-md-outline/15'
                     }`}
                   >
                     {st}
@@ -440,69 +464,69 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Orders Table */}
-            <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg">
+            {/* Orders Table Container */}
+            <div className="overflow-hidden rounded-[24px] border border-md-outline/15 bg-md-surface-container shadow-sm">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-800 bg-slate-950 text-slate-400">
+                <thead className="border-b border-md-outline/15 bg-md-surface-low text-md-on-surface-variant">
                   <tr>
-                    <th className="p-3.5 font-semibold">Tracking #</th>
-                    <th className="p-3.5 font-semibold">Customer</th>
-                    <th className="p-3.5 font-semibold">Pickup</th>
-                    <th className="p-3.5 font-semibold">Destination</th>
-                    <th className="p-3.5 font-semibold">Courier</th>
-                    <th className="p-3.5 font-semibold">Status</th>
-                    <th className="p-3.5 font-semibold text-right">Action</th>
+                    <th className="p-4 font-semibold">Tracking #</th>
+                    <th className="p-4 font-semibold">Customer</th>
+                    <th className="p-4 font-semibold">Pickup Location</th>
+                    <th className="p-4 font-semibold">Destination</th>
+                    <th className="p-4 font-semibold">Assigned Courier</th>
+                    <th className="p-4 font-semibold">Status</th>
+                    <th className="p-4 font-semibold text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
+                <tbody className="divide-y divide-md-outline/10">
                   {filteredOrders.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-500">
+                      <td colSpan={7} className="p-8 text-center text-md-on-surface-variant">
                         No orders matching current filter criteria.
                       </td>
                     </tr>
                   ) : (
                     filteredOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="p-3.5 font-mono font-bold text-sky-400">
+                      <tr key={order.id} className="hover:bg-md-surface-low/50 transition-colors">
+                        <td className="p-4 font-mono font-bold text-md-primary">
                           #{order.trackingCode}
                         </td>
-                        <td className="p-3.5">
-                          <div className="font-medium text-white">{order.customerName}</div>
-                          <div className="text-[11px] text-slate-400">{order.customerPhone}</div>
+                        <td className="p-4">
+                          <div className="font-semibold text-md-on-surface">{order.customerName}</div>
+                          <div className="text-[11px] text-md-on-surface-variant">{order.customerPhone}</div>
                         </td>
-                        <td className="p-3.5 text-slate-300 max-w-[180px] truncate">{order.pickupAddress}</td>
-                        <td className="p-3.5 text-slate-300 max-w-[180px] truncate">{order.dropoffAddress}</td>
-                        <td className="p-3.5">
+                        <td className="p-4 text-md-on-surface-variant max-w-[180px] truncate">{order.pickupAddress}</td>
+                        <td className="p-4 text-md-on-surface-variant max-w-[180px] truncate">{order.dropoffAddress}</td>
+                        <td className="p-4">
                           {order.driver ? (
-                            <span className="text-white font-medium">{order.driver.name}</span>
+                            <span className="text-md-on-surface font-medium">{order.driver.name}</span>
                           ) : (
-                            <span className="text-slate-500 italic">Unassigned</span>
+                            <span className="text-md-on-surface-variant italic">Unassigned</span>
                           )}
                         </td>
-                        <td className="p-3.5">
+                        <td className="p-4">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                            className={`rounded-full px-3 py-0.5 text-[10px] font-semibold ${
                               order.status === 'DELIVERED'
-                                ? 'bg-emerald-500/20 text-emerald-400'
+                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
                                 : order.status === 'IN_TRANSIT'
-                                ? 'bg-sky-500/20 text-sky-400'
+                                ? 'bg-md-secondary-container text-md-on-secondary-container'
                                 : order.status === 'ASSIGNED'
-                                ? 'bg-blue-500/20 text-blue-400'
-                                : 'bg-amber-500/20 text-amber-400'
+                                ? 'bg-md-tertiary-container text-md-on-tertiary-container'
+                                : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
                             }`}
                           >
                             {order.status}
                           </span>
                         </td>
-                        <td className="p-3.5 text-right">
+                        <td className="p-4 text-right">
                           {order.status === 'PENDING' ? (
                             <button
                               onClick={() => {
                                 if (drivers[0]) handleManualAssign(order.id, drivers[0].id);
                               }}
                               disabled={assigningId === order.id}
-                              className="rounded bg-blue-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-blue-500"
+                              className="rounded-full bg-md-primary px-3.5 py-1 text-xs font-medium text-md-on-primary hover:bg-md-primary/90 shadow-sm active:scale-95"
                             >
                               Dispatch
                             </button>
@@ -510,7 +534,7 @@ export default function AdminDashboardPage() {
                             <a
                               href={`/track/${order.trackingCode}`}
                               target="_blank"
-                              className="text-xs text-blue-400 hover:underline font-mono"
+                              className="text-xs text-md-primary hover:underline font-mono"
                             >
                               Track →
                             </a>
@@ -530,11 +554,11 @@ export default function AdminDashboardPage() {
           <div className="mx-auto max-w-7xl p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Deliveries by Hour Chart */}
-              <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-                <h3 className="text-sm font-semibold text-white mb-1">Today's Delivery Volume</h3>
-                <p className="text-xs text-slate-400 mb-6">Dispatched packages per 2-hour window</p>
+              <div className="rounded-[24px] border border-md-outline/15 bg-md-surface-container p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-md-on-surface mb-1">Today's Delivery Volume</h3>
+                <p className="text-xs text-md-on-surface-variant mb-6">Dispatched packages per 2-hour window in Doha</p>
 
-                <div className="flex h-48 items-end gap-3 pt-4 border-b border-slate-800 pb-2">
+                <div className="flex h-48 items-end gap-3 pt-4 border-b border-md-outline/15 pb-2">
                   {[
                     { hour: '08:00', count: 12 },
                     { hour: '10:00', count: 28 },
@@ -543,54 +567,54 @@ export default function AdminDashboardPage() {
                     { hour: '16:00', count: 52 },
                     { hour: '18:00', count: 68 },
                     { hour: '20:00', count: 41 },
-                  ].map((bar, i) => (
+                  ].map((bar) => (
                     <div key={bar.hour} className="flex-1 flex flex-col items-center gap-2 group">
-                      <div className="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="text-[10px] text-md-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
                         {bar.count}
                       </div>
                       <div
-                        className="w-full rounded-t bg-blue-600 transition-all group-hover:bg-sky-400"
+                        className="w-full rounded-t-full bg-md-primary transition-all duration-300 group-hover:bg-md-tertiary"
                         style={{ height: `${(bar.count / 70) * 100}%` }}
                       />
-                      <span className="text-[10px] text-slate-400 font-mono">{bar.hour}</span>
+                      <span className="text-[10px] text-md-on-surface-variant font-mono">{bar.hour}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Status Breakdown */}
-              <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-                <h3 className="text-sm font-semibold text-white mb-1">Fleet Service Level Agreement</h3>
-                <p className="text-xs text-slate-400 mb-6">Fulfillment KPI breakdown</p>
+              <div className="rounded-[24px] border border-md-outline/15 bg-md-surface-container p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-md-on-surface mb-1">Fleet Service Level Agreement</h3>
+                <p className="text-xs text-md-on-surface-variant mb-6">Fulfillment KPI breakdown</p>
 
                 <div className="space-y-4">
                   <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Delivered On-Time</span>
-                      <span className="text-emerald-400 font-semibold">98.4%</span>
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="text-md-on-surface-variant">Delivered On-Time</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">98.4%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-md-surface-low overflow-hidden">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: '98.4%' }} />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Courier Utilization</span>
-                      <span className="text-sky-400 font-semibold">87.2%</span>
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="text-md-on-surface-variant">Courier Telemetry Health</span>
+                      <span className="text-md-primary font-bold">100% Active</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-sky-500 rounded-full" style={{ width: '87.2%' }} />
+                    <div className="h-2 w-full rounded-full bg-md-surface-low overflow-hidden">
+                      <div className="h-full bg-md-primary rounded-full" style={{ width: '100%' }} />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Customer Rating (Qatar)</span>
-                      <span className="text-amber-400 font-semibold">4.96 / 5.0</span>
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="text-md-on-surface-variant">Customer Satisfaction (Qatar)</span>
+                      <span className="text-amber-500 font-bold">4.96 / 5.0</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '99%' }} />
+                    <div className="h-2 w-full rounded-full bg-md-surface-low overflow-hidden">
+                      <div className="h-full bg-amber-500 rounded-full" style={{ width: '99%' }} />
                     </div>
                   </div>
                 </div>
@@ -604,30 +628,30 @@ export default function AdminDashboardPage() {
           <div className="mx-auto max-w-7xl p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {drivers.map((d) => (
-                <div key={d.id} className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 shadow-sm">
+                <div key={d.id} className="rounded-[24px] border border-md-outline/15 bg-md-surface-container p-5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white font-bold text-xs">
-                        TA
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-md-primary text-md-on-primary font-bold text-xs shadow-sm">
+                        {d.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div>
-                        <div className="font-semibold text-white text-sm">{d.name}</div>
-                        <div className="text-xs text-slate-400">{d.phone}</div>
+                        <div className="font-bold text-md-on-surface text-sm">{d.name}</div>
+                        <div className="text-xs text-md-on-surface-variant">{d.phone}</div>
                       </div>
                     </div>
-                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/20">
+                    <span className="rounded-full bg-emerald-500/15 px-3 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
                       {d.status}
                     </span>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-800/80 pt-3 text-xs font-mono">
+                  <div className="mt-4 grid grid-cols-2 gap-3 border-t border-md-outline/10 pt-3 text-xs font-mono">
                     <div>
-                      <span className="text-slate-500">Vehicle:</span>
-                      <div className="text-slate-200">{d.vehicle}</div>
+                      <span className="text-md-on-surface-variant">Vehicle:</span>
+                      <div className="text-md-on-surface font-semibold">{d.vehicle}</div>
                     </div>
                     <div>
-                      <span className="text-slate-500">Latest GPS:</span>
-                      <div className="text-sky-400">
+                      <span className="text-md-on-surface-variant">Latest GPS:</span>
+                      <div className="text-md-primary">
                         {driverLocations[d.id]?.lat.toFixed(4) ?? d.currentLat.toFixed(4)},{' '}
                         {driverLocations[d.id]?.lng.toFixed(4) ?? d.currentLng.toFixed(4)}
                       </div>
@@ -640,88 +664,88 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      {/* New Order Modal */}
+      {/* New Order Modal (Material You Dialog) */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white">Create New Delivery</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[28px] border border-md-outline/20 bg-md-surface-container p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-md-outline/15 pb-3.5">
+              <h3 className="text-base font-bold text-md-on-surface">Create New Delivery</h3>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="rounded-full p-1 text-md-on-surface-variant hover:text-md-on-surface"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateOrderSubmit} className="mt-4 space-y-3.5">
+            <form onSubmit={handleCreateOrderSubmit} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300">Customer Name</label>
+                <label className="block text-xs font-medium text-md-on-surface-variant mb-1">Customer Name</label>
                 <input
                   type="text"
                   required
                   value={newCustomerName}
                   onChange={(e) => setNewCustomerName(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+                  className="block w-full h-11 rounded-t-xl rounded-b-none border-b-2 border-md-outline/40 focus:border-md-primary bg-md-surface-low px-3.5 text-xs text-md-on-surface outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300">Customer Phone</label>
+                <label className="block text-xs font-medium text-md-on-surface-variant mb-1">Customer Phone</label>
                 <input
                   type="text"
                   required
                   value={newCustomerPhone}
                   onChange={(e) => setNewCustomerPhone(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+                  className="block w-full h-11 rounded-t-xl rounded-b-none border-b-2 border-md-outline/40 focus:border-md-primary bg-md-surface-low px-3.5 text-xs text-md-on-surface outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300">Pickup Address (Doha)</label>
+                <label className="block text-xs font-medium text-md-on-surface-variant mb-1">Pickup Address (Doha)</label>
                 <input
                   type="text"
                   required
                   value={newPickupAddress}
                   onChange={(e) => setNewPickupAddress(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+                  className="block w-full h-11 rounded-t-xl rounded-b-none border-b-2 border-md-outline/40 focus:border-md-primary bg-md-surface-low px-3.5 text-xs text-md-on-surface outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300">Dropoff Address (Doha)</label>
+                <label className="block text-xs font-medium text-md-on-surface-variant mb-1">Dropoff Address (Doha)</label>
                 <input
                   type="text"
                   required
                   value={newDropoffAddress}
                   onChange={(e) => setNewDropoffAddress(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+                  className="block w-full h-11 rounded-t-xl rounded-b-none border-b-2 border-md-outline/40 focus:border-md-primary bg-md-surface-low px-3.5 text-xs text-md-on-surface outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300">Items Description</label>
+                <label className="block text-xs font-medium text-md-on-surface-variant mb-1">Items Description</label>
                 <input
                   type="text"
                   required
                   value={newItemsDesc}
                   onChange={(e) => setNewItemsDesc(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white outline-none focus:border-blue-500"
+                  className="block w-full h-11 rounded-t-xl rounded-b-none border-b-2 border-md-outline/40 focus:border-md-primary bg-md-surface-low px-3.5 text-xs text-md-on-surface outline-none"
                 />
               </div>
 
-              <div className="mt-5 flex gap-2 pt-2">
+              <div className="mt-6 flex gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 rounded-lg border border-slate-700 bg-slate-800 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+                  className="flex-1 rounded-full border border-md-outline/25 bg-md-surface-low py-2.5 text-xs font-medium text-md-on-surface hover:bg-md-surface"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 rounded-lg bg-blue-600 py-2.5 text-xs font-semibold text-white hover:bg-blue-500 shadow-md disabled:opacity-50"
+                  className="flex-1 rounded-full bg-md-primary py-2.5 text-xs font-medium text-md-on-primary hover:bg-md-primary/90 shadow-sm active:scale-95 disabled:opacity-50"
                 >
                   {isSubmitting ? 'Creating...' : 'Ingest Order'}
                 </button>

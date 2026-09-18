@@ -84,6 +84,18 @@ class TelemetryCache {
     }
   }
 
+  public async updateDriverLocation(telemetry: LocationTelemetry): Promise<void> {
+    return this.setDriverLocation(telemetry);
+  }
+
+  public async disconnect(): Promise<void> {
+    try {
+      await this.client.quit();
+    } catch {
+      // ignore
+    }
+  }
+
   /**
    * Retrieve latest cached location for a specific driver.
    */
